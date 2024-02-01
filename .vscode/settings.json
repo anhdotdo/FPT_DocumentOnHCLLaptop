@@ -1,0 +1,16 @@
+{
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "stdint.h": "c",
+        "stdint-gcc.h": "c",
+        "stdio.h": "c",
+        "cstdint": "c",
+        "mathlib.h": "c",
+        "stdlib.h": "c",
+        "mylib_device.h": "c",
+        "math.h": "c",
+        "fatparse.h": "c",
+        "io_list.h": "c",
+        "list.h": "c"
+    }
+}
