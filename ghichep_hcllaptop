@@ -1,0 +1,2298 @@
+GHI CHÉP DEVOPS THEO CHỦ ĐỀ
+/Ngay 15/04/22_______________________________________________-
+- tao vpc, subnet, security group bang terraform:
+Terraform - Security Groups & EC2 instances - Cloud Walkerend 
+Tham khao them:
+How to create VPC, Subnets, Route tables, Security groups and Instances using AWS CLI - DEV Community
+-	Cai dat jenkins: 
+Cai jenkins on ubuntu:
+How to Install Jenkins on Ubuntu 22.04 {Step-by-Step Guide} (phoenixnap.com)
+Cai jenkins on amazon linux:
+Step 1 : Connect to your Linux machine
+SetUp JAVA PATH
+Set up Custom TCP port: 8080 in AWS Security Groups
+Step 2: Update Packages
+   sudo yum update
+Step 3 : Check Java is installed. If not install java  
+   java -version
+   sudo yum install java-1.8.0
+UPDATE --> sudo amazon-linux-extras install java-openjdk11
+ 
+   To check and select one out of multiple java versions available
+   sudo /usr/sbin/alternatives --config java
+
+Step 4 : Download latest Jenkins code package
+   sudo wget -O /etc/yum.repos.d/jenkins.repo http://pkg.jenkins-ci.org/redhat/jenkins.repo
+ 
+Step 5 : Import a key file from Jenkins-CI to enable installation from the package
+   sudo rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key
+   UPDATE --> sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io.key
+ 
+Step 6 : Install Jenkins
+   sudo yum install jenkins
+ 
+Step 7 : Start jenkins
+   sudo service jenkins start
+ 
+Step 8 : Access Jenkins server using the public DNS of your ec2 on port 8080
+   http://{ec2-public-dns}:8080
+   example : http://3.89.79.74:8080/
+             http://54.160.227.152:8080/
+ 
+Note : Here you might have to allow port 8080 in your security group settings
+Useful tips:
+To start jenkins on a diff port
+Update port number in /etc/sysconfig/jenkins
+To fetch initial admin password
+sudo su -
+cd /var/lib/jenkins/secrets/
+cat initialAdminPassword
+To stop Jenkins
+sudo service jenkins stop
+To uninstall Jenkins
+sudo service jenkins stop
+sudo yum remove jenkins
+sudo rm -r /var/lib/jenkins
+ 
+jenkins URL:
+http://<jenkins_server_ip>:8080/
+
+***cai dat ansible:
+How To Install and Test Ansible on Linux (howtoforge.com)
+
+- Run the playbook and verify Tomcat server is working on the target machine
+//chay playbook
++ ansible-playbook -I <path_to_ inventory_file> <file_playbook>
+//kiem tra tomcat.service
++ systemctl status tomcat.service
+//kiem tra gui
+http://<public_ip>:8080  --> http://54.83.183.69:8080
+
+***Cai dat docker***
+How to Setup Jenkins in Docker Container? - GeeksforGeeks
+$ sudo usermod –a –G docker ubuntu	: them user: ubuntu vao group docker
+
+***CAC LENH DOCKER***
+- KIEM TRA CAI DAT DOCKER
++ which docker
+- bat dau docker service:
++ service docker status
++ service docker start
++ docker info
++ systemctl enable docker
++ usermod -a -G docker ec2-user
+- Kiem tra images/container:
++ docker ps 
++ docker ps –a
++ hoac: docker container ls --all
++ docker image
++ cat /etc/os-release	: kiem tra cac os
++ exit : thoat container
+- search available docker image on docker hub
++ docker search <ten images>
+- dowload docker images:
++ hoac: docker pull <ten image>:<tag>	: tag mac dinh la phien ban moi nhat
+- tao & chay container: mac dinh lay tu nguon docker hub
++ docker run –it ubuntu
++ docker run –it ubuntu /bin/bash	(-I: duy try stdin, -t: ket noi terminal de tuong tac)
++ docker run –it -d --name <ten_container> -h <ten_hostname> -p <public-port>:<target-port>/protocol ... -v “<path_in_host>”:<path_in_container>
+<ten_image>
+- i: duy try stdin - interactive
+- t, --tty: ket noi terminal 
+-d: detach mode
++ docker run -d -I –t \
+--name <ten_container> \
+-h <ten_hostname> \
+-p <cong_phia_host_machine>:<cong_phia_container>/protocol \
+-v “<path_in_host>”:<path_in_container>
+<ten_image> \
+/bin/sh		: mac dinh la /sh
+- Lenh chay lenh trong container dang chay:
+$ docker exec -d <ten_container> <lenh_thuc_thi_trong_container>
+$ docker exec –it <ten_container> sh		: thuc thi sh shell  
+- khoi dong/ dung container:
++ docker start <ma container>
++ docker stop <container_id>
+- dang nhap vao container:
++ docker attach <ma container / ten container>
+- xoa bo han container:
++ docker container rm <container_id>
+- xoa image:
++ docker rmi <image_id>
+- luu container thanh image:
++ docker commit <ten container/container id> <ten image:phien ban>
+- luu image ra file, nap image tu file
++ docker save –output <ten file, vd: a.tar> <ten/id image>
++ docker load -I <file chua image>
++ docker tag <ten/id image> <ten image moi : version>
+- trao doi du lieu:
++ giua host vs container
++ giua cac container
++ quan ly cac o dia
+- lam viec voi dockerfile: 
++ docker build –t <ten_image> .		: build dockerfile; “.” thu muc hien thoi
++ docker run -d --name <ten container> -p <public port>:<target port> <name/id container>
++ docker cp <path to file.war> <id container>:/usr/local/tomcat/webapps
++ jar -cvf projectname.war *		: create war file
+
+CAI DAT DOCKER & TAO JENKINS CONTAINER TREN EC2:
+How to Setup Jenkins in Docker Container? - GeeksforGeeks
+
+TAI LIEU HOC DOCKER:
+docker exec | Docker Documentation
+
+23/05/22_________________________________________________________
+- Kubernetes:
++ both frontend and backend app
++ fullstack app
+
+CAI DAT MINIKUBE TREN AWS EC2:
+Docker : Kubernetes Minikube install on AWS EC2 - 2020 (bogotobogo.com)
+Setting up Minikube in EC2 - The Easy Way - DEV Community
+
+
+
+<
+#!bin/bash
+sudo apt update
+sudo apt upgrade -y
+sudo hostnamectl set-hostname minikube
+sudo apt-get install -y apt-transport-https ca-certificates curl
+sudo apt-get update -y &&  sudo apt-get install -y docker.io
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+UPDATE--> curl -LO https://github.com/kubernetes/minikube/releases/download/v1.23.0/minikube-linux-amd64
+UPDATE--> curl -LO https://github.com/kubernetes/minikube/releases/download/v1.18.0/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+snap install kubectl –classic
+UPDATE--> https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-kubectl-binary-with-curl-on-linux
+sudo apt install conntrack -y
+>
+
+22/06/22______________________
+https://jhooq.com/aws-kubernetes-jenkins-pipeline/#1-setup-an-aws-ec2-instance
+
+27/07/22___________________________
+Link Github Actions:
+Github Actions - Viblo
+CI/CD tutorial using GitHub Actions - DEV Community
+Create a todo list in React - DEV Community
+https://github.com/MichaelCurrin/node-project-template
+https://github.com/MichaelCurrin/react-quickstart
+Deploy your Node App to EC2 with Github Actions - DEV Community
+
+Terraform vs github actions:
+An Intro to GitHub Actions + Terraform + AWS | by Kyler Middleton | The Startup | Medium
+Get started with AWS ECS using Terraform. | by Tim Okito | Warp 9 | Medium
+Using Terraform to provision Amazon’s ECR, and ECS to manage containers (docker) — One World Coders
+Application Security for Developers: SCA, DAST, and GitHub Actions - FOSSA
+https://medium.com/tulcolabs/setting-up-hashicorp-vault-with-aws-5468074d87c3
+
+
+Link POC L1:
+Istio / Install with Helm
+https://github.com/thangSu/thang-poc2
+Install Prometheus and Grafana Using Helm | by Yst@IT | Medium
+Istio / Getting Started
+ 
+JAVA WEB:
+Lộ Trình Học JavaWeb Cho Người Mới Bắt Đầu (codelearn.io)
+lập trình java core web học java core web học lập trình web với java core tại thành phố hồ chí minh (laptrinhjavaweb.com)
+
+06/10/22_____________________
+start the XAMPP:
+sudo /opt/lampp/./manager-linux-x64.run
+Stop service:
+sudo /opt/lampp/lampp stop
+
+sudo /opt/lampp/lampp start
+
+07/10/22__________________________
+3 cau lenh co ban SQL:
++ tao csdl: 
+Create database <ten_csdl>
+Character set “<kieu_ky_tu>”
+Collate “<phan biet chu hoa, thuong?>”
++ thay doi csdl:
+Alter database <ten_csdl>
+Character set “<>”
+Collate “<>”
++ xoa csdl:
+Drop database “<ten_csdl>”
+
+22/12/22_____________________________************************************
+Assignment -1
+1.	Launch EC-2 instance using Terraform 
+2.	Connect to the instance.
+3.	Install Jenkins, Java and Python in the instance.
+-
+Assignment-2		
+4.	Availability of your Test Application in GitHub
+5.	Tack their versions every time a code is committed to Repo.
+-	Create docker Jenkins Pipeline that will create a “Docker image” from Docker File and Host on the Docker hub. (Docker hub to store images)
+-	It should also Pull the docker image and run it as docker container.
+-	Build the docker Jenkins Pipeline to demonstrate the Continuous integration and Continuous delivery work flow.
+
+Task 1:
+1. 
++ main.tf, 1 module(variable.tf, provider.tf, main.tf(vpc, subnet, security group))
+
+
+ami-0ab04b3ccbadfae1f
+43.201.99.88
+ssh -i "my_tf_key.pem" ubuntu@ec2-43-201-99-88.ap-northeast-2.compute.amazonaws.com
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+/var/lib/jenkins/secrets/initialAdminPassword
+3de683699c3f43e28ecce6df13e2e4f5
+https://github.com/anhdotdo/helloworld-test.git
+23/12/22_________________________________******************************
+http://3.39.25.38:8080/
+node {
+    stage("Git Clone"){
+ 
+        git credentialsId: 'GIT_HUB_CREDENTIALS', url: 'https://github.com/anhdotdo/helloworld-test.git'
+    }
+ 
+    stage("Docker build"){
+        sh 'whoami'
+        sh 'sudo docker version'
+        sh 'sudo docker build -t my-java-app .'
+        sh 'sudo docker image list'
+        sh 'sudo docker tag my-java-app anhdo98/my-java-app:v1'
+    }
+ 
+    withCredentials([string(credentialsId: 'DOCKER_HUB_PASSWORD', variable: 'PASSWORD')]) {
+        sh 'sudo docker login -u anhdo98 -p $PASSWORD'
+    }
+ 
+    stage("Push Image to Docker Hub"){
+        sh 'sudo docker push  anhdo98/my-java-app:v1'
+    }
+}
+30/12/22______________________________****************************
+https://github.com/MichaelCade/90DaysOfDevOps/tree/main/2022/Days
+09/01/22_______________________________***********************************
+Kafka topic:
+Ansible Playbook to install KAFKA on Ubuntu - How to | Devops Junction (middlewareinventory.com)
+10/01/22__________________________***************************************
+#!/bin/bash
+
+for arg in "$@"
+do
+index=$(echo $arg | cut -f1 -d=)
+val=$(echo $arg | cut -f2 -d=)
+case $index in
+X) x=$val;;
+Y) y=$val;;
+*)
+esac
+done
+((result=x+y))
+echo "X+Y=$result"
+03/02/23______________________******************************
+Link POC L0 vs L1:
+https://hclo365-my.sharepoint.com/:p:/g/personal/thang_pham_hcl_com/Ef0dym8gua5Lu3st629fu0QBiz0CwNq853W73eM4w9vZ3A?e=XecxXB
+Notes cua POC L0:
++ Link Jenkins server vs Tomcat server: http://<ip>:<port>
++ Link dien vao webhook: http://<ip_Jenkins>:<port>/github-webhook/
++ **/*.war
++ file.war : duoc dung de deploy trong container tomcat remote.
++ cau hinh tomcat server:
+++ server.xml: thay doi cong tomcat
+++ context.xml: cai dat tomcat server
+28/02/23______________________________****************************************
+Tạo kubernetes cluster 3 node:
+https://piyushchaudhariblog.wordpress.com/2021/10/06/how-to-setup-a-three-node-kubernetes-cluster-using-aws-ec2-instances/
+https://docs.docker.com/engine/install/ubuntu/#set-up-the-repository
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+-----------------------------------------*********************************************
+1. Install Plugins in Jenkins
+ 2. Connect Other Servers Like Tom Cat and Git using Jenkins
+ 3. Prepare Freestyle pipeline in Jenkins and Deploy Sample docker Application in Tomcat.
+4. Write SCM Pipeline get Pipeline script from Git Repo and Run the Job and Deploy into Tom-cat. 
+ 5. Connect with Docker and get the image and Push the image to Tomcat.  
+
+Requirement:
+•	Docker file you need to Expalin Each Step. - CI Pipline Phase.
+•	Where the docker image is Storing?
+•	How you are getting that image and How you are deploying that image? CD Pipeline Phase.
+Link source code:
+https://github.com/anhdotdo/docker_app.git
+
+_______________________________
+1. Install Plugins in Jenkins, Apache Tomcat on the same machine 
+2. Prepare Freestyle pipeline in Jenkins and Deploy Sample Application in Tomcat.
+3. Write SCM Pipeline get Pipeline script from Git Repo and Run the Job and Deploy into Tom-cat. 
+  
+Link source code:
+https://github.com/Rootbie/SampleApplication
+Task 2: Phan Cuong, Nguyen Dung
+Task 3: Nguyen Tai, Truong Loc
+
+Hướng dẫn:
+1. Install Plugins in Jenkins
+ 2. Connect Other Servers Like Tom Cat and Git using Jenkins
+=> tạo 2 ec2 instance, 1 ec2 cài đặt Jenkins, 1 ec2 còn lại cài đặt Tomcat
++ Cài Jenkins vào 1 ec2 tham khảo bên dưới:
+https://www.digitalocean.com/community/tutorials/how-to-install-jenkins-on-ubuntu-22-04
+Cụ thể:
+B1: cài java
+Link tham khảo:
+https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-on-ubuntu-22-04#installing-specific-versions-of-openjdk
+Nhiều khi copy lệnh trên không chạy đc mà phải gõ lại bằng tay !!!
+$ sudo apt update
+$ java –version
+$ sudo apt install default-jre
+$java –version
+$ sudo apt install default-jdk
+$ javac –version
+B2: cài jenkins 
+Link tham khảo:
+https://www.digitalocean.com/community/tutorials/how-to-install-jenkins-on-ubuntu-22-04
+$ wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key |sudo gpg --dearmor -o /usr/share/keyrings/jenkins.gpg
+$ sudo sh -c 'echo deb [signed-by=/usr/share/keyrings/jenkins.gpg] http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+$ sudo apt update
+$ sudo apt install jenkins
+$ sudo systemctl start jenkins.service
+$ sudo systemctl status jenkins
+$ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
++ Trên Jenkins server đó, cài thêm docker để build image rồi push lên docker hub....
+https://docs.docker.com/engine/install/ubuntu/
+$ sudo apt-get update
+$ sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg
+Lệnh trên đây vào link tham khảo copy lệnh tương ứng nếu không chạy đc hoặc gõ lệnh bằng tay.
+$ sudo mkdir -m 0755 -p /etc/apt/keyrings
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+$ echo \
+  "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+$ sudo apt-get update
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+$ sudo docker run hello-world
+Thêm command sau để add user ubuntu vào group docker
+$ sudo usermod –a –G docker ubuntu
+Thoát ra rồi vào lại để update
+$ exit
+$ ssh -i <path_to_file>.pem ubuntu@<public_ip>
+$ docker version
+
++ Cài Tomcat vào ec2 còn lại, tham khảo link bên dưới:
+https://www.digitalocean.com/community/tutorials/how-to-install-apache-tomcat-10-on-ubuntu-20-04
+Trong đó, thay vì cài tomcat 10 thì cài tomcat 9 vì Jenkins không hỗ trợ version 10, bằng cách thay link này :
+https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.20/bin/apache-tomcat-10.0.20.tar.gz
+Bằng link này:
+https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.73/bin/apache-tomcat-9.0.73.tar.gz
+
+$ sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat
+$ sudo apt update
+$ sudo apt install default-jdk
+$ java –version
+$ cd /tmp
+$ wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.73/bin/apache-tomcat-9.0.73.tar.gz
+$ sudo tar xzvf apache-tomcat-9*tar.gz -C /opt/tomcat --strip-components=1
+$ sudo chown -R tomcat:tomcat /opt/tomcat/
+$ sudo chmod -R u+x /opt/tomcat/bin
+$ sudo nano /opt/tomcat/conf/tomcat-users.xml
+Tham khảo file tomcat-users.xml
+ 
+$ sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml
+Tham khảo:
+ 
+$ sudo nano /opt/tomcat/webapps/host-manager/META-INF/context.xml
+Tham khảo:
+ 
+
+
+ 3. Prepare Freestyle pipeline in Jenkins and Deploy Sample docker Application in Tomcat.
+•	Docker file you need to Expalin Each Step. - CI Pipline Phase.
+•	Where the docker image is Storing?
+•	How you are getting that image and How you are deploying that image? CD Pipeline Phase.
+=> Trên Jenkins server tạo 1 job có kiểu freestyle để deploy docker application có sẵn trong source code: https://github.com/anhdotdo/docker_app.git
+4. Write SCM Pipeline get Pipeline script from Git Repo and Run the Job and Deploy into Tom-cat. 
+=> Trên Jenkins server tạo 1 job có kiểu pipeline để deploy docker application có sẵn trong source code: https://github.com/anhdotdo/docker_app.git
+
+ 5. Connect with Docker and get the image and Push the image to Tomcat.  
+=> Trên Tomcat server chạy lệnh docker run image đã được push lên Docker hub trước đó.
+
+
+tucChetdiduoc123@
+Trong đó, gồm các bước
+++ Creating a key pair
+Tạo file .pem để truy cập ec2 thông qua máy ảo giống như này:
+ 
+Hoặc connect trực tiếp như này: click vào connect button
+ 
+++ Creating a security group
+++ Launching an Amazon EC2 instance
+++ Installing and configuring Jenkins
+Ngay 11/07/23____________________________________********************************
+HACKER RANK- OISV-Devops-Intermediate Assessment
+1. 
+You want to deploy a web application using Terraform. 
+Complete a file stub "/home/ubuntu/1063862-terraform-secret-creation/main.tf" using HCL with one or more steps that do the following: 
+•	Initialize the provider plugin "hashicorp/local", at version "2.1.0". 
+•	Declare a variable "secret" that already passed to the apply target, with a reference environment variable as value. 
+•	Using a "local_file" resource, create a new file at path "/run/secret" with permissions "0600" and the value from the variable "secret".
+
+=> TL:
+File main.tf:
+terraform {
+  required_providers{
+    local = {
+source = "hashicorp/local"
+version = "2.1.0"
+    }
+  }
+  required_version = ">= 0.15.0"
+}
+ 
+variable "secret"{
+  default = "anhdo"
+}
+ 
+resource "local_file" "create_file"{
+  content = var.secret
+  filename = "/run/secret"
+  file_permission = "0600"
+}
+ 
+output "debug" {
+  value = "Good luck! :)"
+}
+
+2.
+You need to deploy a web application using Terraform.
+Complete a file stub "/home/ubuntu/1063728-terraform-variables/main.tf" using HCL with one or more steps that do the following:
+•	Declare the variable "dns_resolver", with type "set" of "strings" and default values "8.8.8.8" and "8.8.4.4". 
+•	Declare the variable "port", with type "integer" and default value "53". 
+•	Declare the variable "token", with type "string" and an empty default value. 
+•	Declare the variable "use_cache", with type "bool" and the default value "true". 
+•	Output the values of the "dns_resolver", "port", "token" and "use_cache" variables using "output" block. The output of the "token" variable must be declared as "sensitive".
+
+==>> TL:
+terraform {
+  required_version = ">= 0.15.0"
+}
+ 
+variable "dns_resolver"{
+  type = set(string)
+  default = (["8.8.8.8", "8.8.4.4"])
+}
+ 
+variable "port"{
+  type = number
+  default = 53
+}
+ 
+variable "token"{
+  type = string
+  default = ""
+}
+ 
+variable "use_cache"{
+  type = bool
+  default = true
+}
+ 
+output "dns_resolver"{
+  value = var.dns_resolver
+}
+ 
+output "port"{
+  value = var.port
+}
+ 
+output "token"{
+  value = var.token
+  sensitive = true
+}
+ 
+output "use_cache"{
+  value = var.use_cache
+}
+ 
+output "debug" {
+  value = "Good luck! :)"
+}
+
+3.
+You need to deploy a web application using Terraform.
+Complete a file stub "/home/ubuntu/1064316-terraform-functions/main.tf" using HCL with one or more steps that do the following:
+•	Declare the variable "ports", with type "list" of "numbers" that already passed to the apply target, with a reference environment variable as value.
+•	Using corresponding HCL functions and "output" block with the name "ports_count", find and output a total number of all the ports in the "ports" variable.
+•	Using corresponding HCL functions and "output" block with the name "ports_min", find and output the minimum port number from all the ports in the "ports" variable.
+•	Using corresponding HCL functions and "output" block with the name "ports_max", find and output the maximum port number from all the ports in the "ports" variable.
+==>>TL:
+terraform {
+  required_version = ">= 0.15.0"
+}
+ 
+variable "ports"{
+  type = list(number)
+}
+ 
+output "ports_count"{
+  value = count(var.ports)
+}
+ 
+output "ports_min"{
+  value = min(var.ports...)
+}
+ 
+output "ports_max"{
+  value = max(var.ports...)
+}
+ 
+output "debug" {
+  value = "Good luck! :)"
+}
+
+4. 
+ 
+5.
+The task is to complete a file stub "/home/ubuntu/835915-docker-mastering-secrets/Dockerfile" with one or more steps that do the following:
+•	Mounts a Docker secret file using the id "my-secret" and copies its content to the new file "/mysecret.txt"
+==>> TL:
+# syntax = docker/dockerfile:1.0-experimental
+FROM busybox:latest
+RUN echo "Good luck! :)"
+RUN --mount=type=secret,id=my-secret cp /run/secrets/my-secret /my-secret.txt
+
+6.
+<Chưa đúng hoàn toàn>
+The task is to complete a file stub "/home/ubuntu/835964-docker-immutables-fixing/script.sh" with one ot more steps that do the following: 
+•	Runs a new Docker container "my-container" from the "busybox" image (latest tag) in interactive background mode, without pseudo-TTY allocation.
+•	Mounts the existing directory "/home/ubuntu/835964-docker-immutables-fixing" at "/mnt" of "mycontainer" container. 
+•	Implements a way to remove the "/mnt/my-immutable-file.txt" file from "my-container" container without any modifications from the host.
+==>> TL:
+#!/usr/bin/env bash
+docker run -di --name example-container alpine
+docker exec -i example-container echo "Good luck! :)"
+ 
+docker run -di -v /home/ubuntu/835964-docker-immutables-fixing:/mnt --name my-container busybox:latest
+docker exec -i my-container /bin/ash -c "chattr -i /mnt/my-immutable-file.txt; rm -f /mnt/my-immutable-file.txt"
+exit 0
+
+7.
+Run a new Docker container named “my-container” form thẻ “busybox” image in interactive gackgraound mode, without pseudo-TTY allocation.
+Pass an existing environment variable “MY_ENVIRONMENT_VARIABLE” ti the “my-container” container
+
+8.
+Run a new container ‘my-container’ from ‘busybox’ image 
+Create a new network ‘my-network’ and assign it to the ‘my-container’ container 
+
+==>> TL:
+docker run –di –name my-container busybox
+docker network create my-network
+Docker network connect my-network my-container
+
+9.
+
+ 
+apiVersion: v1
+kind: Pod
+metadata:
+name: frontend
+namespace: hacker-company
+annotations:
+publisher: “http://www.hacker-company.com”
+labels:
+environment: production
+spec:
+containers:
+- name: nginx
+  image: nginx:stable
+
+10.
+ 
+==>> TL:
+kubectl patch statefulset builder -n hacker-company -p '{"spec":{"updateStrategy":{"type":"RollingUpdate","rollingUpdate":{"maxUnavailable": "100%"}}}}'
+END!__________________
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+HACKER RANK *************************____________________________
+Link AWS Cloudshell:
+AWS CloudShell (amazon.com)
+1.
+ 
+==>> TL:
+#!/bin/bash
+# extract the archive
+Tar –xzf /home/ubuntu/894899-linux-access-log-filtering/archive.tar.gz -C /tmp
+# find 5xx status code records with IP address not equal to “127.0.0.1”.
+Grep –h –E ‘^[^ ]+ [^ ]+ [^ ]+ \[[^]]+\] “[^”] +” [5-9][0-9][0-9][0-9]+ “.*” “.*” (?! 127\.0\.0\.1).*’ /tmp/*.log > /tmp/access.log
+
+Trong đó,
++ -x: extrac, -z: gzip compression đc sử dụng, -f: file, -C: thư mục đích.
++ 
+
+==>> TL2: (tham khảo)
+#!/bin/bash
+Tar –xzf archive.tar.gz
+Grep –h ‘^[^ ]* [^ ]* [^ ]* \[[^]]*\] “[^”]*” [5-9][0-9][0-9] [^ ]*’ /home/ubuntu/894899-linux-access-log-filering/*.log | grep –v ‘ 127.0.0.1 ’ > /tmp/access.log 
+==>> TL3: (tham khảo)
+#!/bin/bash
+ 
+# Extract the archive
+tar -zxvf archive.tar.gz
+ 
+# Find 5xx status code records with IP not equal to 127.0.0.1 and output to /tmp/access.log
+grep -hE '^[^ ]+ [^ ]+ [^ ]+ \[[^]]+\] "([^"]*)" ([5-9][0-9][0-9]) [^ ]+ [^ ]+ "([^"]*)" "([^"]*)" ' access.log.* | grep -vE '^[^ ]+ [^ ]+ [^ ]+ \[[^]]+\] "([^"]*)" ([5-9][0-9][0-9]) 127\.0\.0\.1 [^ ]+ "([^"]*)" "([^"]*)" ' > /tmp/access.log
+v
+2.
+ 
+==>> TL:
+#!/bin/bash
+# Extract the archive
+Tar –xzf /home/ubuntu/894065-linux-access-log-cleanup/archive.tar.gz -C /tmp
+# Find records with identified IP addresses.
+Grep –h –E ‘^[^ ]+ [^ ]+ [^ ]+ \[[^]]+\] “[^”]+” [^ ]+ [^ ]+ “.*” “.*” [^ ]+’ /tmp/*.log > /tmp/access.log
+
+3. 
+As part of deploying a large project on AWS for your company, you need to create an AWS identity and Access Management (IAM) group and new IAM users in it.
+Using the AWS command Line interface (AWS CLI):
++ Create a new IAM group Deployers
++ create a new IAM user Auto in the group Deployers with the following tags assigned (Key => Value)
+++ Role -> Deployment
+++ Mode -> Auto
++ Create a new IAM user Manual in the group Deployers with the following tags assigned (Key => Value):
+++ Role -> Deployment
+++ Mode -> Manual
+==>> TL:
+$ aws iam create-group --group-name Deployers
+$ aws iam create-user –user-name Auto
+$ aws iam add-user-to-group --user-name Auto --group-name Deployers
+$ aws iam tag-user --user-name Auto --tags ‘[{“key”:”Role”, “Value”:”Deployment”}, {“Key”:”Mode”, “Value”:”Auto”}]’
+
+$ aws iam create-user –user-name Manual
+$ aws iam add-user-to-group --user-name Manual--group-name Deployers
+$ aws iam tag-user --user-name Auto --tags ‘[{“key”:”Role”, “Value”:”Deployment”}, {“Key”:”Mode”, “Value”:”Manual”}]’
+
+4.
+ 
+==>> TL:
+$ aws lambda create-function \
+--function-name generate-token \
+--runtime nodejs14.x \
+--role arn:aws:iam::000000000000:role/token-generator \
+--handler index.handler \
+--zip-file fileb://tmp/1387123-aws-lambda-function-creating/token-generator.zip
+END!_________________
+GREP COMMAND
++ cú pháp:
+$ grep [option] pattern [file]
++ cac option hay dung:
+++ -i, --ignore-case: lờ đi các trường hợp khác biệt với mẫu
+++ -v, --invert-match: chọn các trường hợp không khớp
+++ -n, --line-number: đưa lên đầu dòng số thứ tự dòng trùng khớp tương ứng trong file đầu vào
+++ -w, --word-regexp: tim từ chính xác và in ra dòng đó
+++ -c, --count: đếm số lần khớp và in ra các dòng đó
+End grep command! _________________
+
+HACKER RANK DEVOPS ADVANCED
+1. Đề bài
+When you finish work on deployment update process, you decide to make a cleanup process for redundant Docker images and containers left after switching the application stack.
+Complete the file stub “/home/ubuntu/1321867-docker-deployment-cleanup/script.sh” with onr or more steps that do the following.
++ Elininate all the Docker containers not inherited from the “hackerapp” Docker image. 
++ Eliminate all the Docker containers not labeled with “com.hackerapp.role=production”
++ Eliminate all the Docker images not labeled with “com.hackerapp.role=production”.
+Other Docker containers and images must be untouched
+The Docker entities will be dynamically created during evaluation, their IDS must not be hardcoded! 
+
+==>> TL tham khao, chua dung:
+#!/bin/bash
+Docker ps –a –filter “not ancestor=hackerapp” -q| xargs docker rm –f
+Docker ps –a –filter “label!=com.hackerapp.role=production” -q| xargs docker rm –f
+Docker images –filter “dangling=false” --filter “label!=com.hackerapp.role=production” -q | xargs docker rmi –f
+2. De bai
+As part of a security audit of a company’s project deployed on AWS, they need to secure an existing S3 Bucker In order to objects through the S3 API
+Using the AWS command line interface (AWS CLI), update the existing S3 bucket policy “1346425-aws-s3-storage-securing”.
++ Enable the “s3:GetObject” action only on the “12.34.56.0/24” subnet for any principal (part of the ARN id “1346425-aws-s3-storage-protection/*”)
++ Completely disable the “s3:GetObject” action on a “private” subresource (part of the ARN is “1346425-aws-s3-storage-protect/private/*”)
+==>> TL:
+$ aws s3api put-bucket-policy --bucket 1346425-aws-s3-storage-securing --policy '{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowGetObjectFromSpecificIP",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::1346425-aws-s3-storage-protection/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": "12.34.56.0/24"
+        }
+      }
+    },
+    {
+      "Sid": "DenyGetObjectOnPrivateSubresource",
+      "Effect": "Deny",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::1346425-aws-s3-storage-protect/private/*"
+    }
+  ]
+}'
+
+3. De bai
+ 
+==>> TL:
+#!/bin/bash
+ 
+# Find all Docker containers labeled "com.hackerapp.cluster=alpha"
+container_ids=$(docker ps -q --filter "label=com.hackerapp.cluster=alpha")
+ 
+# Loop through the container IDs and set the memory limit and restart policy
+for id in $container_ids
+do
+  # Set memory limit to 64Mb
+  docker update --memory="64m" $id
+  
+  # Set restart policy to not more than 5 times after failure
+  docker update --restart-policy="on-failure:5" $id
+Done
+
+4. De bai
+ 
+==>>TL:
+$ git config user.name "Hacker Developer"
+$ git config user.email hacker.developer@hackercompany.com
+
+Tao va edit file: .git/hooks/pre-commit. File này sẽ được tự động thực thi trước mỗi lần commit.
+#!/bin/bash
+# Reject commits that add "junk" files with the specified extensions
+if git diff --cached --name-only --diff-filter=A | grep -E '\.(tmp|swp)$' > /dev/null ; then
+    echo "Junk files are not allowed"
+    exit 1
+fi
+$ chmod +x .git/hooks/pre-commit
+Kiểm tra lại: 
+Test the functionality by creating a new "junk" file with a ".tmp" or ".swp" extension, adding it to the staging area, and attempting to commit it. The commit should be rejected with the message "Junk files are not allowed". Files with these extensions can still be modified or deleted normally.
+
+END! hackder rank devops advanced_______________
+
+HACKER RANK - 
+1- DE BAI:
+You want to deploy a web application using Terraform. As part of the process, complete the file stub "/home/ubuntu/1076518-terraform-kubernetes-deployment/main.tf" using HCL with one or more steps that do the following:
+• Initialize the provider plugin "hashicorp/kubernetes", at version "2.2.0".
+• Add "/etc/rancher/k3s/k3s.yaml" to the "hashicorp/kubernetes" provider configuration as the config path.
+• Using proper "hashicorp/kubernetes" resources, implement the deployment of "Kubernetes" application stack described in the existing "definition.yml" as HCL instructions in the "main.tf" file.
+Note
+The completed solution will be evaluated in a new, clean environment. Be sure everything
+is in the "/home/ubuntu/1076518-terraform-kubernetes-deployment" folder.
+• Tasks should execute with "sudo solve" invoked from the question directory.
+. You have sudo access.
+Grading
+• The execution of "sudo solve" invoked from the question directory solves the task
+
+LOI GIAI:?
+
+2. DE BAI:
+Docker: Immutables Fixing
+The task is to complete a file stub "/home/ubuntu/835964-docker-immutables-fixing/script.sh" with one of more steps that do the following:
+• Runs a new Docker container "my-container" from the "busybox" image (latest tag) in interactive background mode, without pseudo-TTY allocation
+• Mounts the existing directory "/home/ubuntu/835964-docker-immutables-fixing" at "/mnt" of "my-container container.
+• Implements a way to remove the "/mnt/my-immutable-file.txt" file from "my-container" container without any modifications from the host.
+Note
+The completed solution will be evaluated in a new, clean environment. Be sure everything is in the "/home/ubuntu/835964-docker-immutables-fixing" folder.
+. All the tasks should be done within a simple "sudo solve" execution invoked from the question directory.
+• Docker is already installed.
+You have sudo access.
+Grading
+The execution result of "docker exec-i my-container rm -f/mnt/my-immutablo-file,bx" outputs an error.
+• The execution result of "docker exec-i my-container /bin/ash -c "chattri /mnt/my-immutable-file.txt; rm -
+f /mnt/my-immutable-file.txt successfully removes the file from both the container volume and the host.
+
+LOI GIAI: ?
+
+3. DE BAI:
+Resource Quota: Implementation
+Complete the file stub "/home/ubuntu/1162947-kubernetes-resource-quota-Implementation/definition.yml with one or more steps that do the following:
+•	creates a new Resource Quota named "standard" with hard limits, specifies a memory limit as "256Mb" and maximum number of pods as "1"
+•	creates a new Resource Quota named "premium" with hard limits, specifies a memory limit as "2Gb" and maximum number of pods as "10"
+Note:
+•	The completed solution will be evaluated in a new, clean environment. ANY CHANGES MADE MANUALLY WILL BE LOST ONLY CHANGES TO THE "definition.yml" FILE IN "/home/ubuntu/1162947-kubernetes-resource-quota-implementation" WILL BE CARRIED TO THE NEW ENVIRONMENT
+•	The result of "sudo solve", invoked from the question directory, should solve the task
+•	You have sudo privileges, if needed.
+
+LOI GIAI: ?
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: standard
+spec:
+  hard:
+    limits.memory: "256Mi"
+    pods: "1"
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: premium
+spec:
+  hard:
+    limits.memory: "2Gi"
+    pods: "10"
+
+4- DE BAI:
+Kubernetes: Service ClusterIP
+A web application built on Kubernetes must be deployed. Complete the file stub "/home/ubuntu/931544-kubemetes-service-clusterip/definition.yml" with one or more steps that do the following:
+• Create a new namespace "hacker-company".
+• Deploy a new "nginx image (from Dockerhub) as the container "nginx" on the "stable" tag as the pod "frontend" and in the "hacker-company' namespace.
+• Create a new "role" label with the value "frontend" at the "frontend" pod. • Create a new "frontend" service ("ClusterIP type). Forward port "80" of the "nginx" container in "frontend" pod to port "8888"
+Note
+• The completed solution will be evaluated in a new, clean environment. Be sure everything is in the "/home/ubuntu/931544-kubernetes-service-clusterip" folder.
+• All the tasks should be done within a simple "sudo solve" execution invoked from the question directory.
+• You have sudo access.
+Grading
+The execution result of "sudo solve invoked from the question directory solves the task.
+
+LOI GIAI:?
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hacker-company
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend
+  namespace: hacker-company
+  labels:
+    role: frontend
+spec:
+  containers:
+  - name: nginx
+    image: nginx:stable
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: hacker-company
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8888
+  selector:
+    role: frontend
+
+5- DE BAI:
+Linux: Authentication Log Reporting
+Complete the file stub "/home/ubuntu/898797-linux-authentication-log-reporting/script.sh" with one more steps that do the following:
+Using two existing log files "home/ubuntu/898797-linux-authentication-log-reporting/event.log" (columns "uuid" "datestamp" and "status")
+and "/home/ubuntu/898797-linux-authentication-log- reporting person log" (columnis "uuid" and "login")
+• Find all the users who entered the system ("status" is equal to the "success")
+• Output their "login" as the result to "/tmp/report.txt" using the newline as the delimiter
+Note
+• The completed solution will be evaluated in a new, clean environment. Be sure everything is in the home/ubuntu/898797-linux-authentication-log-reporting" folder
+• All the tasks should be done within a simple "sudo solve" execution invoked from the question directory.
+• You have sudo access
+Grading
+• The execution result of "sudo solve" invoked from the question directory solves the task
+
+LOI GIAI:?
+END! Hacker rank test
+___________________________________________
+29/08/23_____________________*******************************
+ON TAP THEO CHU DE DEVOPS
+1. s3: là gì, dung lượng lưu trữ, quy mô
+2. ebs: cũng như s3, có thể có nhiều ebs trong 1 ec2 hay không, phạm vi sử dụng
+Phân biệt s3 vs ebs
+3. ec2: sử dụng thì mất tiền cho những gì
+4. Phân biệt ALB, NLB
+5. LInux: core?, lệnh liệt kê grep
+6. vpc: tài nguyên trong vpc của aws có gì?
+7. file sysctl?
+Tra loi:
+1.
++ S3 là gì:
+++ Là một dịch vụ cung cấp dung lượng lưu trữ ở mức đối tượng. Amazon S3 lưu trữ dữ liệu dưới dạng các đối tượng trong các vùng lưu trữ.
+++ Trong lưu trữ đối tượng, mỗi đối tượng bao gồm dữ liệu, metadata và một khóa.
++ dung lượng lưu trữ và quy mô:
+Amazon S3 cung cấp dung lượng lưu trữ không giới hạn. Kích thước tệp tối đa cho một đối tượng trong Amazon S3 là 5 TB.
+2.
++ ebs la gi:
+++ là một dịch vụ cung cấp ổ đĩa lưu trữ mức độ khối dữ liệu để sử dụng với các phiên bản máy ảo Amazon EC2. 
+++ Nếu bạn dừng hoặc chấm dứt một phiên bản máy ảo Amazon EC2, thì tất cả dữ liệu trên ổ đĩa EBS đính kèm vẫn truy cập được.
+++Instance store?(- lưu trữ cho phiên bản máy ảo)?
+++ Amazon EBS snapshot (- bản kết xuất nhanh amazon abs)?
++ phân biệt s3 và ebs:
+++ s3 cung cấp dịch vụ lưu trũ không giới hạn, kích thước tối đa mỗi tệp lưu trữ là 5 TB, chúng chuyên ghi một lần/đọc nhiều lần, chúng có độ bền 99,999999999%.
+++ ebs cung cấp lưu trữ giới hạn 16 TB
+------
+++ s3 phù hợp cho lưu trữ các đối tượng hoàn chỉnh và thỉnh thoảng thay đổi
+++ ebs phù hợp cho lưu trữ đòi hỏi thao tác đọc, ghi, thay đổi chức năng phức tạp.
+
+END on tap theo chu de devops!!!______________________________________
+PHAN BIET LIST, TUPLE, SET, DICTIONARY IN JAVA
++ LIST:
+++ có thứ tự (có chỉ mục), có thể thay đổi, cho phép giá trị lặp lại
+++ khai báo: l=[1, 2, 3]
++ TUPLE:
+++ có thứ tự, không thể thay đổi, cho phép giá trị trùng lặp
+++ khai báo: t = (1, 2, 3)
++ SET:
+++ không có thứ tự (-> không thể thay đổi), không cho phép giá trị lặp lại
+++ khai báo: s = {1, 2, 3}
++ DICTIONARY:
+++ không có thứ tự, có thể thay đổi, không cho phép giá trị lặp lại
+++ khai báo: d = {“name”:”do”, “age”:25}
+END phan biet list, tuple, set va dict
+
+JAVACRIPT _CODELEARN.IO********************
++ const/ var/ let
+Vd: for (let [key, value] of Object.entries(obj)){}
++ for...in
++ for... of
++ object and methods
+Js là ngôn ngữ dựa trên object --> mọi thứ đều là object trong js
+Trong javascript không tạo class để lấy object mà tạo trực tiếp object
+Có 3 cách khai báo đối tượng;
+++C1: theo nghĩa đen
+Vd: var datas = {
+name: “Nam”,
+age: 25
+};
+++C2: dùng new operator
+Vd: var datas = new Object ();
+datas.name = “Nam”;
+data.age = 25;
+++C3: dùng hàm tạo - constructor
+Vd: function emp(id, name, age){
+this.id = id;
+this.name = “Nam”;
+this.age = 25;
+}
+--> var datas = emp(“16151006”, “Nam”, 25);
+Có 2 cách truy xuất thuộc tính
+++c1: Vd: datas["name”]
+++c2: vd: datas.name
++ có khoảng 12 phương thức
+++1 Object.assign(target, source) // copy thuộc tính từ đối tượng nguồn đến object đích, hoặc ghi đè giá trị nếu cùng property.
+++2 Object.create() : tạo 1 đối tượng mới với đối tượng mẫu cho trước
+++3 Object.defindProperty(): khai báo/ xác định thuộc tính của 1 object
+++4 Object.defindProperties(): tương ứng với nhiều thuộc tính của 1 đối tượng
+++5 Object.entries(obj): trả về mảng của các mảng gồm key, value 
+++6 Object.keys(obj): trả về mảng các keys.
+++7 Object.values(obj): tra ve mang cac values
++ join(string): dung de noi cac phan tu bang chuoi noi string
+Vd: Object.keys(person).join(“\n”).
++ Array & phương thức của Array
+++ Khai báo array: có 3 cách tương tự khai báo object
+Vd1: theo nghĩa đen - dùng chữ 
+var emp = [1, 2, 3, 4];
+Vd2: dùng new operator 
+var emp = new Array();
+emp[0] = 1;
+emp[1] = 2;
+Vd3: dùng hàm tạo 
+var emp = new Array(1, 2, 3)
+++ thuộc tính:
+Array.length: trả về số phần tử của mảng.
+++ phương thức của mảng: có 21 methods
+Giả sử có 3 array a, b, c.
+++1. Concat(): trả về mảng mới là hợp thành của các mảng thành phần
+Vd: b.concat(a): trả về mảng mới là b sau khi thêm a và đuôi b
+Vd: b.concat(a, c): mở rộng với 3 mảng.
+++2. Copywithin(): copy 1 phần mảng ban đầu vào chính nó
+++3. every (): trả về true/ false, kiểm tra từng phần tử mảng có đáp ứng điều kiện hàm. 
+Vd1: var temp = data.every((cvalue)=>{
+        return cvalue % 2 === 0;
+    });
+Vd2 tương đương vd1:
+Var temp = data.every(function(cvalue){
+Return cvalue % 2 == 0;
+})
+++4 some (): tương tự every() trả về true/ false, chỉ khác là kiểm tra 1 vài phần tử có đáp ứng đk hàm không
+++5 filter(): tương tự every(), chỉ khác kiểm tra điều kiện hàm rồi trả về mảng gồm các phần tử thỏa mãn đk.
+++6 find()/ findIndex(): tra ve phan tu dau tien (giá trị/ chỉ số) thoa man dieu kien ham
+++7 forEach(function): trả về void, xử lý các phần tử (có thể thỏa mãn điều kiện (ví dụ đk chia hết 5)).
+++8 includes(<gia tri can tim>, <chỉ số bắt đầu tìm>): trả về true/ false, kiểm tra mảng có chứa phần tử cho trước không.
+++9 indexOf(element, fromIndex): trả về index đầu tiên của element tìm thấy, fromIndex âm thì được tính từ cuối mảng, luôn tìm từ index đó đến cuối mảng
+-->lastIndexOf(element, fromIndex): trả về index cuối cùng, luôn tìm từ index đó đến đầu mảng.
+++10 join(<chuỗi phân cách>): trả về chuỗi gồm các phần tử ngăn cách bởi chuỗi phân cách. 
+++11 map(function): trả về mảng thỏa mãn điều kiện (ví dụ lấy trị tuyệt đối)
+++12 Array.shift()/unshift(<phan tu them vao>)/pop()/push(<phan tu them vao>): xóa/ thêm vào đầu/ cuối của mảng.
+Xóa thì trả về phần tử bị xóa, thêm thì trả về độ dài mảng.
+++13 Array.reverse(): trả về mảng đã đảo ngược.
+++14 Fill(): điền giá trị 
++ String
+trong javascript, chuỗi nguyên thủy ví dụ “hello” cũng được coi là Object nên cho phép thêm methods.
+++ có 2 thuộc tính:
+++1 String.length: trả về độ dài của string
+++2 String.prototype: dùng định nghĩa thêm phương thức cho đối tượng String
+Cú pháp: String.prototype.name = value;
+++ Có 9 phương thức:
+++1 String.charAt(<chi_so>): trả về ký tự
+--> String.charCodeAt(<chi so>): trả về mã ascii ký tự
+++2 String.concat(string): trả về chuỗi là chuỗi ban đầu nối thêm vào đuôi bởi string
+++3 String.indexOf(string1): trả về chỉ số đầu tiên của string 1 trong chuối ban đầu.
+--> String.lastIndexOf(string1): tương tự nhưng là chỉ số cuối cùng.
+++4 String.replace(<string1>, <string2>): trả về chuỗi sau khi thay thế string2 cho string1
+++5 String.substr(<from index>, <length>): trả về chuối con 
+--> String.substring(<from index>, <to index>): trả về chuỗi con
+++6 String.slides(<from index>, <to index>): trả về chuỗi con
+--> <to index> không có, mặc định là chỉ số cuối chuỗi
+--> chỉ số âm được tính từ cuối chuỗi.
+++7 String.toUpperCase(<chuỗi>): trả về chuỗi viết hoa
+--> String.toLowerCase(<chuỗi>): trả về chuối viết thường
+++8 String.split(<string>): trả về mảng các phần tử tách từ chuỗi ban đầu bằng chuỗi string
+++9 String.includes(<chuỗi>, <chỉ số>): trả về true/ false.
+--> chỉ số âm được tính từ cuối chuỗi
+--> không có chỉ số, mặc định là quét từ đầu chuối đến cuối chuỗi
+END! Javascript codelearn.io
+_____________________________________
+BASIC ALGORITHMS _CODELEARN.IO******************
++ thuật toán sàng nguyên tố
+Input: n
+Output: là số nguyên tố không?
+B1: I =2, 3, ...n, gán arr[i] = 1, a[0] = a[1] = 0
+Trong đó, 1: là số nguyên tố, 0: không là số nguyên tố
+B2: a = 2, tính a * a, a * (a + 1), a*(a+2), … đến khi (tích) > n thì dừng, gán arr[tích] = 0;
+B3: tăng a dần, tức a = b sao cho b>a & arr[b] = 1, quay lại B2
+B4: nếu a*a > n, kết thúc thuật tóa
+--> nếu arr[n] = 1 thì n là nguyên tố và ngược lại
+
+END! Basic algorithms codelearn.io
+___________________________________________
+DATA STRUCTURE AND ALGORITHMS _CODELEARN.IO********************
+06/09/23_________
++ ép kiểu?
+https://techacademy.edu.vn/ep-kieu-trong-c/?#II-Cach-Ep-Kieu-Du-Lieu-Trong-C
+++ cho phép ép kiểu dạng gọi hàm
+Vd: int n = 4; return float(n)/3 
++ stack: kieu du lieu – kiểu ngăn xếp: hoạt động nguyên tắc LIFO
+++ có 3 phương thức ngoài empty(), size():
++++ top(): phần tử đỉnh của ngăn xếp
++++ push(): đẩy 1 phần tử vào đỉnh
++++ pop(): xóa 1 phần tử đỉnh ở đỉnh
++ queue: cấu trúc dữ liệu hàng đợi - hoạt động nguyên tắc FIFO
+++ có 4 phương thức ngoài empty(), size():
++++ q.front(): trả về giá trị phần tử đầu hàng đợi 
++++ q.back(): trả về giá trị phần tử cuối cùng queue
++++ q.push(): thêm 1 phần tử vào cuối queue 
++++ q.pop(): xoá 1 phần tử ở đầu
++ danh sach lien ket
+++ dslk don: 
+Node0-->node1-->node2-->NULL
+Node *l = new node();	// bản chất dslk l là con trỏ node có giá trị là địa chỉ node đầu tiên.
++++ struct node {int data, node *next};	// kieu du lieu node
++++ node *createNewNode(int x);
++++ node* addAt(node *l, int k, int x);
++++ node *deleteAt(node *l, int k);
++++ node *getNodeAt(node *l, int k);
++++ node *updateNode(node *l, int a, int b);
+++ dslk doi
+++ dslk vong
++ search algorithsm
+++ linear seach: tìm kiếm tuyến tính - O(n)
+Là tìm kiếm lần lượt qua từng phần từ, nếu tìm thấy thì trả về kết quả hoặc nếu không tìm thấy thì tìm đến hết dữ liệu.
+++ binary search: tìm kiếm nhị phân - O(log n)
+Giả sử có mảng số nguyên không giảm, tìm chỉ số đầu tiên của phần tử mảng = x cho trước.
+Phương pháp tìm kiếm nhị phân: 
+L = 0, r = n – 1
+Mid = (l + r)/2, chia mảng thành 2 nửa: [l, mid] và [mid + 1, r]
+So sánh: a[mid] >= x, x sẽ nằm nửa đầu của mảng ==> r = mid
+   A[mid] < x, x sẽ nằm nửa sau của mảng ==> l = mid + 1
+Điều kiện lặp là l < r.
+Nếu l = r & a[l] = x thì trả về l, còn a[l] != x thì không tìm thấy, return –1.
++ Thuật toán tìm mảng con đầu tiên có tổng = s cho trước từ mảng a[]
+++ tạo mảng b[], sao cho tưng phần tử là tổng của các phần tử phía trước đến vị trí phần tử đó
+--> mảng b[] mảng không giảm
+Cụ thể, b[0] = a[0] && b[i] = a[i] + b[i - 1];
+++ truy xuất lần lượt b[i] đến cuối mảng b[], 
++++ nếu b[i] == s ==> trả về: in ra phần tử mảng a từ chỉ số 0 -> I.
++++ nếu b[i] > s, tìm phần tử có chỉ số j, sao cho b[j] = b[i] - s
+--> tìm j, ta áp dụng bài toán binary search.
+++++ nếu tồn tại j, ==> trả về: in ra mảng a từ chỉ số j+1 -> I.
+==> nếu không trả về gì, trả về: -1 (- không tồn tại mảng con của a[])
+
++ Sort algorithsm: giải thuật sắp xếp
+++1 bubble sort – sắp xếp nổi bọt - O(n^2)
+Là việc so sánh 2 phần tử liên tiếp nhau và đổi chỗ nếu chưa đúng thứ tự.
+Vd:
+bool swaped = true;
+for(int i = n - 1; i >= 1; i--){
+for(int j = 0; j < i; j++){
+if(a[j] > a[j + 1]){
+swap(&a[j], &a[j + 1]);
+swaped = false;
+}
+}
+if(swaped == true){
+for(int i = 0; i < n; i++){
+printf("%d ", a[i]);
+}
+return;
+}
+}
+++2 insertion sort - sắp xếp chèn - O(n^2)
+Là việc chia mảng a[] thành 2 phần, phần đầu đã được sắp xếp, phần sau chưa được sắp xếp, ta sẽ duyệt từng phần tử phần sau để chèn vào đùng vị trí trong phần đầu để đảm bảo tính sắp xếp.
+Minh họa:
+4 – 3 – 1 – 5
+3 – 4 – 1 – 5
+1 – 3 – 4 – 5
+1 – 3 – 4 - 5
+Vd:
+void insertionSort(int a[], int n){
+for(int i = 1; i < n; i++){
+int index = i;
+int value = a[index];
+while(index > 0 && a[index - 1] > value){
+a[index] = a[index - 1];
+index--;
+}
+a[index] = value;
+}
+}
+++3 selection sort – sắp xếp lựa chọn - O(n^2)
+Là việc quét mảng a[] từ chỉ số 0->n-1 tìm phần tử min rồi đổi chỗ cho a[0],
+Quét mảng a[] từ 1->n để tìm phần tử min rồi đổi chỗ cho a[1], …
+Quét mảng a[] từ n-2 -> n-1 để tìm min rồi đổi chỗ cho a[n - 2]
+--> phần tử cuối a[n - 1] chắc chắn đúng vị trí.
+
+Vd:
+void selectionSort(int a[], int n){
+int minIndex;
+for(int i = 0; i < n - 1; i++){
+minIndex = i;
+for(int j = i + 1; j < n; j++){
+if(a[minIndex] > a[j]){
+minIndex = j;
+}
+}
+if(minIndex != i){
+swap(&a[minIndex], &a[i]);
+}
+}
+}
+
+
+++4 merge sort - sắp xếp gộp/ trộn - O(nlog(n))
+Là việc chia đôi a[] bởi m = (l + r)/2, mỗi nửa lại tiếp tục được chia đôi bởi m, cho đến khi mảng chỉ còn 1 phần tử (tức l >= r). Tiến hành gộp từng đôi được chia trước để được mảng a[] đã được sắp xếp.
+VD:
+void merge(int a[], int l, int m, int r){
+    int b[100001], c[100001];
+    int i, j, k;
+    int size1 = m - l + 1;
+    int size2 = r - m;
+    for(i = 0; i < size1; i++){
+        b[i] = a[l + i];
+    }
+    for(i = 0; i < size2; i++){
+        c[i] = a[m + 1 + i];
+    }
+    
+    // gop 2 mang b[], c[] vao a[] tu cs: l -> r
+    i = 0;
+    j = 0;
+    k = l;
+    while(i < size1 && j < size2){
+        if(b[i] <= c[j]){
+            a[k++] = b[i++];
+        }else{
+            a[k++] = c[j++];
+        }
+    }
+    while(i < size1){
+        a[k++] = b[i++];
+    }
+    while(j < size2){
+        a[k++] = c[j++];
+    }
+}
+ 
+void mergeSort(int a[], int l, int r){
+    int m = (l + r)/2;
+    mergeSort(a, l, m);
+    mergeSort(a, m+ 1, r);
+    merge(a, l, m, r);
+}
+
+++5 shell sort – sắp xếp shell – O(n)
+--> phù hợp dữ liệu lớn trung bình.
+Là việc sắp xếp dựa trên thuật toán sắp xếp  chèn (insertion sort), bản chất là tránh việc đổi chỗ 2 phần tử cách quá xa nhau
+Cụ thể, 
++++ dùng interval = n/2, n/4, n/8 đến khi n = 1
+Có thể chia nhỏ a thành a1[], a2[], a3[]… mà các phần tử liên tiếp cách nhau 1 khoảng interval.
++++ sắp xếp trên từng mảng con dựa vào bài toán insertion sort
+--> khi interval = 1, sắp xếp hoàn thành ta sẽ đạt được mảng mong muốn.
+VD:
+void shellSort(int a[], int n){
+int interval, i, j;
+for(interval = n / 2; interval > 0; interval /= 2){
+for(i = interval; i < n; i++){
+int temp = a[i];
+for(j = i; j >= interval && a[j - interval] > temp; j -= interval){
+a[j] = a[j - interval];
+}
+a[j] = temp;
+}
+}
+}
+++6 quick sort - sắp xếp nhanh
+Là việc lựa chọn phần tử chốt pivot p = a[(l + r)/2] chia đôi mảng a[], tiếp tục chia đôi mỗi nửa, cho đến khi mỗi nửa chỉ có 1 phần tử.
+Cụ thể,
+Quét i từ l -> r, nếu phần tử < p thì tiếp tục dịch.
+Quét j từ r -> l, nếu phần tử > p thì tiếp tục dịch.
+Khi dừng lại thì đổi chỗ 2 phần tử đó, tiếp tục chiều dịch tương ứng.
+Khi i = j, ta coi như 2 phần tử để đổi chỗ cho chính nó, tiếp tục chiều dịch tương ứng, cho đến khi i>j thì dừng lại.
+--> ta chia được 3 mảng con: (a, l, j) và (a, i, r)
+--> tương tự chia nhỏ đối với 2 mảng con trên --> ta được mảng ban đầu được sắp xếp.
+VD:
+void quickSort(int a[], int l, int r){
+int p = a[(l + r)/2];
+int i = l, j = r;
+while(i < j){
+while(a[i] < p){
+i++;
+}
+while(a[j] > p){
+j--;
+}
+if(i <= j){
+int temp = a[i];
+a[i] = a[j];
+a[j] = temp;
+i++;
+j--;
+}
+}
+if(j > l){ // dieu kien dung
+quickSort(a, l, j);
+}
+if(i < r){ // dieu kien dung
+quickSort(a, i, r);
+}
+}
++ recursive algorithm – giả thuật hồi quy
++ tree data structure - cấu trúc dữ liệu cây
+Grge
+++Khai báo:
+Typedef Struct node{
+Int data;
+Struct node* left;
+Struct node* right;
+}node;
+++ hàm khởi tạo 1 node mới
+Node createNewNode(int x){
+Node* temp = (node*)malloc(sizeof(node));
+If(temp == NULL){
+exit 0;
+}
+Temp->data = x;
+Temp->left = NULL;
+Temp->right = NULL;
+}
+++ hàm thêm 1 node vào đuôi tree
+Node* insertNode(node *t, int x){
+If(t == NULL){
+Return createNewNode(x);
+}
+If(x < t->data){
+T->left = insertNode (l->left, x);
+}else{
+T->right = insertNode (l->right, x);
+}
+}
+++ hàm show tree
+Void show(node* t){
+If(t != NULL){
+show(t->left);
+printf(“%d ”, t->data);
+show(t->right);
+}
+}
+
+END! Data structure and algorithms codelearn.io
+___________________________________________
+OOP IN C++ _CODELEARN.IO******************************
+Link IDE C++:
+https://www.w3schools.com/cpp/trycpp.asp?filename=demo_helloworld
+
+30/08/23_________
++ Kiểu dữ liệu cơ bản trong c/c++
+++ kiểu số nguyên:
++++ char, unsigned char (1 byte)
++++ int, unsigned int (4 byte)
++++ short, unsigned short (2 byte)
++++ long, unsigned long (4 byte)
+++ Kiểu số thực
++++ float (4 byte), độ chính các 6 số thập phân
++++ double (8 byte), đcx 15 cs
++++ long double (10 byte), đcx 19 cs
++ phạm vi truy cập: private, protected, public
+++ truy cập từ trong cùng 1 class: private, protected, public
+++ truy cập từ lớp con: protected, public
+++ truy cập từ bên ngoài class: public
+31/08/23____________
++ DRY – don't repeat yourself : đừng lặp lại code của bạn
+Đây là nguyên tắc khi code
++ UML class (unified modeling language class- lớp ngôn ngữ mô hình thống nhất): đây là biểu đồ lớp UML 
+là một tập các ký hiệu đồ họa được sử dụng để xây dựng và trực quan hóa các hệ thống hướng đối tượng
++ Không giống các ngôn ngữ lập trình khác, trong c++ cho phép thay đổi mức phạm vi kế thừa.
+++ mức public: ở lớp con kế thừa
+Public -> public
+Protected -> protected
+Private -> không kế thừa
+++ mức protected
+Public -> protected
+Protected -> protected
+Private -> không kế thừa
+++ mức private
+Public -> private
+Protected -> private
+Private -> không kế thừa
+01/09/23_______________
++ up_casting/down_casting $ virtual
+++ up_casting: trường hợp mà đối tượng thuộc lớp con bị chuyển kiểu lên kiểu thuộc lớp cha (tức bị gán cho con trỏ lớp cha), dẫn đến con trỏ này chỉ có thể truy cập đến phương thức thuộc lớp cha.
+++ down_casting: trường hợp này đối tượng thuộc lớp cha bị chuyển kiểu sang kiểu thuộc lớp con (tưc bị gán cho con trỏ lớp con), dẫn đến con trỏ này chỉ có thể truy cập đến phương thức thuộc lớp con.
+++ virtual: có từ khóa này trước phương thứ, sẽ nói cho trình biên dịch biết tại thời điểm runtime, đối tượng đang ở lớp nào, dẫn đến đảo ngược lại kết quả của up_casting.
++ destructor phải đi cùng từ khóa virtual:
+Để ngăn chặn rò rỉ bộ nhớ, do giải phóng bộ nhớ hoàn toàn cả lớp con và lớp cha
+01/09/23_______________
++ encapsulation - tính đóng gói:
+++ la gi: tính chất che giấu thông tin đối tượnag
+++ mục đích: giảm thiểu lỗi khi phát triển phần mềm
+++ thể hiện: các thuộc tính được đặt ở phạm vi truy cập private.
++ inheritance - tính kế thừa:
+++ là gì: lớp con (lớp dẫn xuât - derived class) kế thừa các thuộc tính, phương thức của lớp cha (base class)
+++ mục đích: tái sử dụng code; tăng khả năng mở rộng phần mềm
+++ thể hiện: c++ khác các ngông ngữ khác ở chỗ là cho phép chọn phạm vi kế thừa (3 phạm vi, ví dụ :public, :protected, :private)
++ Polymophism – tính đa hình (one thing in many form): thể hiện qua 3 biểu hiện sau:
+++ nạp chồng phương thức 
+++ ghi đè phương thức
+++ đối tượng đa hình - nghĩa là trong up_casting, biến lớp cha có thể tham chiểu tới các đối tượng của lớp con, nên biến lớp cha có nhiều “form”
++ abstraction – tinh truu tuong
+++ là gì?: là 1 trong 4 tính chất đặc trưng của OOP.
+++ mục đích: ẩn đi những thành phần không cần thiết của đối tượng, chỉ tập trung vào các tính năng của đối tượng, dẫn đến chỉ tập trung tính năng của đối tượng mà không cần biết nó được cài đặt như thế nào.
+++ biểu hiện: lớp trừu tượng là lớp có các đặc điểm sau:
++++ 1. là lớp chứa ít nhất 1 phương thức trừu tượng
+Phương thức trừu tượng có từ khóa virtual và gán giá trị = 0, dẫn đến nhìn vào phương thức trừu tượng chỉ nhìn thấy tính năng mà không thấy nó được cấu tạo như thế nào.
++++ 2. không thể khởi tạo đối tượng của lớp trừu tượng mà chỉ là con trỏ của lớp trừu tượng tham chiếu đến đối tượng của lớp con.
++++ 3. lớp con kế thừa lớp trừu tượng phải ghi đè tất cả các phương thức trừu tượng của lớp cha.
+02/09/23______________a
++ #pragma once:
+Khi chia source code thành các file class và include file class cha, #pragma once sẽ kiểm tra có cần thiết copy class cha vào class con hay không.
+--> ta cũng có thể sử dụng cú pháp: #ifnotdef #define #endif
++ Mối quan hệ giữa các đối tượng
+++ phụ thuộc:
+ClassA quan hệ phụ thuộc với classB nếu trong classA có sử dụng đối tượng của classA (dùng làm tham số, biến cục bộ)
+Nói cách khác là đối tượng của classA sử dụng đối tượng của classB
+++ kết hợp:
+ClassA quan hệ kết hợp với classB nếu đối tượng của classA có thuộc tính là đối tượng của classB
+Được chia 2 loại: kết hợp thu nạp (- aggregation) vs kết hợp hợp thành (- composition)
++++ thu nạp: nếu đối tượng của classA vs của classB độc lập với nhau (hơi khó hiểu)
++++ hợp thành: nếu đối tượng của classB được tạo bên trong đối tượng của classA, ví dụ như folder với file.
++ biến static và phương thức static
+++ Biến static: 
++++ là gì? 
+được chia sẻ cho các đối tượng của lớp, biến được khởi tạo 1 lần và tồn tại đến kết thúc chương trinh
+--> giá trị được lưu trữ
++++ biến static không thể khởi tạo bên trong hàm constructor mà phải ở bên ngoài class: 
+vd: int A::a = 0;
++++ có thể truy xuất trực tiếp biến static thông qua tên lớp khai báo và toán tử::
+Vd: cout << A::a;
++++ Lưu ý: biến static không được coi là thuộc tính của lớp.
+++ phương thức static: 
++++ trong cùng 1 lớp, ph.thức tĩnh không thể gọi đến phương thức không phải static
++++ chỉ có thể sử dụng biến static.
+END! cv in c++ codelearn.io
+___________________________________________
+C++ STANDARD TEMPLATE LIBRARY IN CODELEAN.IO
+Link IDE C++:
+https://www.w3schools.com/cpp/trycpp.asp?filename=demo_helloworld
+03/09/23________________
++ vector trong c++:
+Link to refer: https://topdev.vn/blog/vector-trong-c/
+++ là gì? Nó là kiểu dữ liệu mảng động, cho phép tự động tăng giảm kích thước mảng, trong thư viện #include<vector>
+++ các hàm phổ biến:
+// nhom ham 1.modifier
++++ v.push_back(pt)
++++ v.pop_back()
++++ v.erase(v.begin(), v.begin() + 2)		// xoa 2 phan tu dau tien
+
+// nhom ham 2.element access
++++ v.front()
++++ v.back()
+
+// nhom ham 3.iterators – tham chieu
++++ v.begin()
++++ v.end()
+
+// nhom a
+Vd: vector<int> v //khai báo
+Vd: vector<int> v = {1, 2, 3};	// khai bao vs khoi tao gia tri
+Vd: v = v1 		// gán bằng 1 vector khác
+Vd: v.size()	// trả về số lượng phần tử
++ Iterator trong c++: 
+++ Là đối tượng dùng để duyệt từng thành phần trong các cấu trúc dữ liệu đặc thù: vector, map, set, list
+++ là con trỏ trỏ tới lần lượt các thành phần (bằng cách tăng con trỏ lên đơn vị) không cần quan tâm kiểu dữ liệu gì.
+++ cú pháp: vd: vector<int>::iterator it;
++ v.resize(n) - ham thay đổi kích thước vector
+++ nếu n > kích thước hiện tại của v: tự động thêm các giá trị 0
++++ nếu muốn tự động điền giá trị cụ thể khac 0, 
+Vd: v.size(n, 5)
+++ nếu n < kích thước hiện tại của v: xóa phần tử có chỉ số >= n
++ auto: từ khóa dùng với vector
+Vd: for(auto x:v){cout << x << endl;}
++ thuật toán xắp sếp có 2 cách:
+SX vector v theo thứ tự tăng dần.
+++ cách 1: bubble sort - sắp xếp nổi bọt
+bool swaped = true;
+for(int i = n - 1; i >= 1; i--){
+for(int j = 0; j < i; j++){
+if(a[j] > a[j + 1]){
+swap(&a[j], &a[j + 1]);
+swaped = false;
+}
+}
+if(swaped == true){
+for(int i = 0; i < n; i++){
+printf("%d ", a[i]);
+}
+return;
+}
+}
+
+Biến tấu của bubble sort:
+vector<int> sortVector(vector<int> v){
+   For(int i = 0; i < v.size() - 1; i++){
+      For(int j = 0; j < v.size() - 1 - i;j++){
+         If(v[j] > v[j + 1]) swap(v[j], v[j + 1]);
+      }
+   }
+} 
+++ cách 2:
+vector<int> sortVector(vector<int> v){
+   For(int i = 0; i < v.size(); i++){
+      For(int j = I + 1; j < v.size();j++){
+         If(v[i] > v[j]) swap(v[i], v[j]);
+      }
+   }
+}
++ v.erase(v.begin(), v.begin() + 2)		// xoa 2 phan tu dau tien cua vector
+++ ham v.end() tra ve iterator lien sau cua iterator cuoi cung, nen
+v.erase(v.begin(), v.end())			//xoa tat ca phan tu 
++ list<int> l		// kieu du lieu danh sach trong thu vien #include<list>
+++ lợi thế là chèn và xóa, xong nhược điểm là phải duyệt lần lượt (đầu <=> cuối)
+++ cac phuong thuc đặc thù: 
++++ l.begin(), l.end(): trả về con trỏ ở đầu list và vị trí liền sau của phan tu cuối list
++++ l.front(), l.back(): trả về giá trị phần tử đầu và cuối list.
++++ l.push_back()/ l.pop_back(), l.push_front()/l.pop_front(): tương tự vector, ta cũng có hàm thêm - push, xóa - pop vào đầu - front và cuối - back
+
+END! C++ STANDARD TEMPLATE LIBRARY IN COLEARN.IO
+___________________________________________
+JAVA FUNDAMENTALS _CODELEARN.IO*******************************
+Linh IDE Java:
+W3Schools Tryit Editor
++ quy tắc đặt tên biến:
+++ tên biến chỉ có thể gồm chữ cái , chữ số và dấu gạch dưới, trong đó, ký tự đầu tiên phải là chữ cái hoặc dấu gạch dưới.
+++ tên biến phải khác với từ khóa: int, float, double
++ Các 4 kiểu dữ liệu trong java:
+++ chuỗi: String s, trong c++ khai báo là string s - viết thường
+++ số nguyên:
++++ char | 2 byte | 0->65535	, trong c++ char (1 byte | -128->127)
++++ byte | 1 byte | -128->127
++++ int  | 4 byte | … ; short (2 byte); long (8 byte)
+++ số thực
++++ float | 4 byte |… ; float (8 byte)
+++ luận lý: boolean
++ Nhập/xuất dữ liệu:
+++ Scanner input = new Scanner(System.in): khai báo đối tượng input của lớp Scanner, System.in là tham số truyền vào là đầu vào tiêu chuẩn.
+++ khai báo “import java.util.Scanner”
+++ các phương thức nhập: 
++++ input.next(): đọc chuỗi cho đến khi gặp khoảng trắng, 
+--> input.next().charAt(0): doc 1 ky tu
++++ input.nextInt(),
++++ input.nextDouble(), 
++++ input.nextLine().
++ Mảng trong java:
+++ int[] a = new int[10];	// khai báo mảng a kiểu int độ dài = 10
+--> trong c++: int a[10];
+++ int[] a = {1, 2, 3};		// khai báo mảng a kiểu a, khởi tạo giá trị 
+--> trong c++: int a[] = {1, 2, 3};
+++ a.length				// là độ dài của mảng, length là thuộc tính.
+--> trbjectng c++, độ dài mảng = sizeof(a)/sizeof(a[0])
++ String trong java:
+++ String s;			// khai bao chuoi
+++ s1.equals(s2)			// phương thức so sánh 2 chuỗi 
+--> trong c++, s1.compare(s2)
+++ s.charAt(3)			// phương thức trả về ký tự tại chỉ số = 3
+--> trong c++, s.charAt(3), giống nhau
+++ s.toCharArray()		// phương thức convert từ String sang chuỗi
+Ngoài ra còn có 7 phương thức xử lý sâu trong java:
+++ 1. s.toLowerCase(), s.toUpperCase(): chuyển sang sâu thường/ hoa
+++ 2. s1.indexOf(s2): trả về vị trí s2 trong s1
+++ 3. s.length(): trả về độ dài sâu, trong c++: s.length() -->giống nhau
+++ 4. s1.subString(int a, int b): trả về 1 chuối con từ s1 với chỉ số bắt đầu và chỉ số kết thúc là a, b 
+++ 5. s1.startsWith(s2), s1.endsWith(s2): kiểm tra s1 có bắt đầu/ kết thức bằng s2 không?
+++ 6. s1.split(s2):  trả về các chuỗi được tách từ s1 bằng chuối s2
+++ 7. s1.repalce(s2, s3): trả về chuối là s1 bị thay thế 1 phần bằng cách s2 được thay bằng s3, (s2, s3 là chuỗi/ ký tự)
+END! Java fundamentals _codelearn.io
+___________________________________________
+OOP IN JAVA _CODELEARN.IO***********************************8
+Link IDE java:
+W3Schools Tryit Editor
++ Array trong java:
+Để gán 1 mảng cho 1 mảng khác, ta dùng toán tử gán, bản chất chỉ là 2 biến mảng cùng tham chiếu tới cùng 1 mảng nhớ trong bộ nhớ, không phải copy giá trị
+--> trong c++, ta phải copy từng phần tử mảng cũ sang mảng mới.
++ 4 phạm vi truy cập: private, default, protected, public
+Là việc các thuộc tính và phương thức của 1 class có thể được truy cập từ đâu.
++ Tương ứng có 4 nơi để truy cập đến các thuộc tính và phương thức.
+++ 1. cùng class: truy cập thuộc tính có phạm vi private, default, protected, public
+++ 2. cùng package: default, protected, public
+++ 3. khác package nhưng từ class con kế thừa: protected, public
+++ 4. Khác package và không từ class con: public.
++ biến static, phương thức static
+++ biến static và phương thức static có thể được gọi không cần khai báo đối tượng
+++ trong cùng 1 class, phương thức static chỉ có thể gọi phương thức static khác và biến static.
++ 4 tính chất oop trong java: 
+++ 1. encapsulation – tính đóng gói
+++ 2. inheritence - tính kế thừa
+++ 3. polymorphism - tính đa hình
+++ 4. abstraction - tính trừu tượng
++ encappsulation: tính đóng gói
+++ là gì: việc ẩn đi những thông tin của đối tượng
+++ mục đích: hạn chế lỗi khi phát triển phần mềm
+++ biểu hiện: các thuộc tính đặt ở phạm vi truy cập private
+++ lợi ích:
++++ 1. che dấu những thông tin không cần thiết
++++ 2. hạn chế những truy cập lạm quyền
++++ 3. làm cho trạng thái đối tượng luôn đúng, nghĩa là kiểm soát được giá trị của các thuộc tính luôn có giá trị hợp lý. 
++++ 4. (có thể bỏ qua) Khi thay đổi cấu trúc class, không ảnh hưởng đến các class khác, nghĩa là từ cấu trúc có firstName, lastName, getFullName() thành chỉ có fullname, getFullName().
++ Inheritence – tính kế thừa
+++ là gì: lớp con kế thừa thuộc tính, phương thức của lớp cha, từ khóa kế thừa “extends”; không có đa kế thừa - tức 1 lớp con kế thừa nhiều lớp cha
+--> trong khi đó trong c++, cho phép lựa chọn phạm vi kế thừa: private, protected, public, hỗ trợ đa kế thừa.
+++ mục đích: tái sử dụng code, tăng khả năng mở rộng phần mềm
+++ biểu hiện:
+++ lợi ích:
+++ đặc điểm lưu ý: 
++++ lớp con không kế thừa các thuộc tính và phương thức kiểu private (kiểu default được kế thừa nếu lớp con và lớp cha cùng package)
++++ constructor con luôn gọi đến constructor của lớp cha, nếu không chỉ rõ thì mặc định gọi constructor măc định của lớp cha (hàm không tham số), nếu không có constructor mặc định thì phải sử dụng toán tử super.
+Vd: super(name, age);	// chỉ rõ gọi đến constructor có 2 tham số của lớp cha.
++ Override – ghi đè trong java
+++ nên sử dụng annotaion (chỉ thị) @Override để có 2 lợi ích sau:
++++ chương trình giúp kiểm tra có đang ghi đè không để báo lỗi (trong trường hợp ghi đè mà đánh sai tên phương thức hay thiếu tham số)
++++ giúp người đọc dễ theo dõi.
+++ phương thức bị ghi đè của lớp cha có thể được gọi bằng từ khóa supper
+Vd: supper.display()
+++ ngoài ra, phương thức static không thể bị ghi đè, đối với phương thức non-static muốn không bị ghi đè ta dùng từ kháo final
+Vd: public final void display()
+++ Yêu cầu để phương thức ở lớp con có thể ghi đè được phương thức ở lớp cha là phạm vi truy cập của method ở lớp con phải bằng hoặc rộng hơn tương ứng của lớp cha.
+Vd: phạm vi truy cập method ở lớp con public > protected > default > private phạm vi truy cập của method ở lớp cha.
++ polymorphism – tính đa hình
+++ là gì: 1 trong 4 tính chất của oop, theo nghĩa tiếng anh: one thing in many forms.
+++ mục đích: cùng 1 phương thức chấp nhận được nhiều kiểu tham số, số lượng tham số truyền vào. 
+++ thể hiện:
++++1. Ghi đè phương thức
++++2. Nạp chồng phương thức
++++3. Đối tượng đa hình, nghĩa là biến của lớp cha tham chiếu đến các đối tượng của lớp con, nên biến của lớp cha có nhiều forms.
+++ lợi ích: O
+++ đặc điểm nổi bật: O
++ Variable hiding – ẩn biến
+Là gì:?
+Lớp con khai báo thuộc tính cùng tên với thuộc tính ở lớp cha, do thuộc tính ở lớp cha không bị ghi đè mà tồn tại độc lập với thuộc tính của lớp con, khi up-casting xảy ra sẽ gọi đến thuộc tính ở lớp cha.
+Nếu muốn gọi đến thuộc tính ở lớp con ta sử dụng down-casting
+Vd: up_casting:	Animal a = new Dog();	-->a.x;
+Down_casting:	Animal a = new Dog(); 	-->((Dog)a).x;
++ Abstraction – tính trừu tượng
+++ là gì: 1 trong 4 tính chất của OOP, che giấu những thông tin không cần thiết (bạn không biết được cấu tạo và việc cài đặt bên trong) để tập trung vào tính năng của đối tượng.
+++ mục đích: tập trung vào tính năng của đối tượng để phát triển mở rộng
+++ thể hiện: 
+Vd: public abstract class Animal{… public abstract void sound();}
+// khai báo lớp trừu tượng và phương thức trừu tượng
+++ Lợi ích: O
+++ đặc điểm lưu ý:
++++1. Lớp trừu tượng có thể có các phương thức trừu tượng, method trừu tượng chỉ có phần khai báo, không có phần thân.
++++ 2. Không thể khai báo đối tượng của lớp cha mà phải khai báo đối tượng của lớp con
+Vd: Animal a = new Dog(); mà không thể là: Animal a = new animal();
++++ 3. ở lớp con phải ghi đè tất cả các phương thức trừu tượng của lớp cha
++ Interface - là trường hợp đặc biệt của lớp trừu tượng
+++ là gì: 
+1 trường hợp lớp trừu tượng mà ở đó trừu tượng hoàn toàn các phương thức, các biến được coi là hằng số - trừu tượng hoàn toàn. Kế thừa bằng từ khóa “implements”
+++ mục đích: 
+sử dụng rất nhiều khi đi làm thực tế, interface khai báo các tính năng của class đó, và các đối tượng chủ yếu thao tác với các phương thức trong interface.
+++ thể hiện: 
+Interface sẽ tự hiểu tất cả các phương thức là trừu tượng, các biến là hằng số
+Vd:
+Interface IAnimal{
+Int a = 4;		--> hiểu là: public static final int a = 4;
+Void sound();	--> hiểu là: public abstract void sound();
+}
+++ lợi ích: O
+++ đặc điểm lưu ý:
+++1. Giống với lớp trừu tượng, lớp con kế thừa interface phải ghi đè tất cả phương thức của interface và không thể khởi tạo đối tượng của interface.
+++2. Interface mặc định hiểu các phương thức là trừu tượng, các biến là hằng số
+++3. Interface hỗ trợ đa kế thừa, nghĩa là 1 lớp có thể kế thừa nhiều các interface.
++ Mối quan hệ giữa các đối tượng
+++ quan hệ phụ thuộc: 
++++ Là việc trong class A có sử dụng đối tượng của class B làm tham số, biến cục bộ. Nghĩa là nếu đối tượng của class B thay đổi thì đối tượng của class A phải thay đổi theo.
++++ là mối quan hệ rộng nhất, ký hiệu muox tên đứt.
+++ quan hệ kết hợp (gồm có thu nạp và hợp thành):
+Là việc class A sử dụng đối tượng của class B làm thuộc tính.
++++ thu nạp: đối tượng của class A và class B độc lập với nhau
++++ hợp thành: đối tượng của class B được tạo ra trong class A.
+Vd:
+Class ClassA{
+Private ClassB b;
+Public ClassA{
+b = new ClassB();
+}
+}
+
++ Ôn tập java.
++ Chuẩn bị đi phỏng vấn.
+++1. Core java
+++2. OOP
+++3. Data structure and algorithms
+++4. Exception handling
+++5. Multithreading
+ 
+1. Khác biệt JDK vd JRE?
+JDK: java development kit, là môi trường phát triển các ứng dụng java
+JRE: java runtime environment, là thứ được yêu cầu để chạy chương trình java
+2. Java là 1 ngôn ngữ độc lập với platform?
+Bởi vì java dựa trên máy ảo để đạt được sự độc lập với platform. Nghĩa là trong thực tế cả ngôn ngữ java và API được kết hợp với nó lần đầu được biên dịch thành các mã byte và có thể chạy trên nhiều nền tảng. Máy ảo sẽ đóng vai trò xử lý các biến thể ứng với mỗi nền tảng để chạy trên đó.
+3. Khác biệt abstract class vs Interface?
+Abstract class là lớp mà không thể khởi tạo đối tượng, chỉ có thể kế thừa
+Interface là 1 trường hợp đặc biệt của abstract class là hoàn toàn chứa các phương thức trừu tượng và các hằng số.
+4. Phân biệt final, finally và finalize
++ final được dùng trong khai báo hằng biến và hằng phương thức, và không được thay đổi.
++ finally được dùng trong các khối try-catch và được thực thi bất chấp exception có được ném ra hay không.
++ finalize là phương thức được gọi bới garbage collector khi mà đối tượng không còn được sử dụng.
+5. Khác biệt stack memory vs heap memory?
++ bộ nhớ stack lưu trữ biến cục bộ ,gòi phương thức
++ bộ nhớ heap dùng để lưu trữ đối tượng, và các biến instance của chúng (bản chất là các biến-  thuộc tính)
+ 
+1. OOP features in java?
++ encapsulation – tính đóng gói: 
+Java cho phép tính đóng gói, đó là việc che giấu các chi tiết thực thi của đối tượng khỏi các đối tượng khác. Java đạt được tính đóng gói thông qua chỉ định truy cập - access modifier.
++ Inheritance - tính kế thừa:
+Java cho phép tính kế thừa, đó là việc tạo ra 1 lớp mới kế thừa các thuộc tính và phương thức của lớp đã tồn tại. Mục đích là việc tái sử dụng code và phát triển thêm những tính năng mới.
++ Polymorphism - tính đa hình:
+Java cho phép tính đa hình. Java đạt được tính đa hình thông qua nạp chồng phương thức và ghi đè phương thức
++ Abstraction - tính trừu tượng:
+Java cho phép tính trừu tượng, đó là việc che giấu những chi tiết thực thi phức tạp của đối tượng và cung cấp giao diện đơn giản hóa cho người dùng - nghĩa là tập chung vào các tính năng của đối tượng. Java đạt được tính trừu tượng thông qua các lớp trừu tượng và các interface.
++ Class và Object:
+Java là ngôn ngữ dựa trên class, nghĩa là nó chung cấp cấu trúc để định nghĩa class và tạo ra các đối tượng của các class đó.
+2. Access specifiers trong java?
+Có 4 chỉ định truy cập:
++ private: được truy cập từ cung 1 class
++ default: được truy cập từ trong cùng 1 gói, trong cùng 1 class
++ protected: có thể được truy cập từ ngoài gói nhưng phải từ lớp con kế thừa
++ public: có thể được truy cập từ ngoài gói và không phải là lớp con.
+3. Composition vs inheritance (quan hệ hợp thành và quan hệ kế thừa)
++ compositon là mối quan hệ hợp thành, nghĩa là 1 lớp chứa 1 đối tượng của lớp khác làm thuộc tính.
++ inheritance là mối quan hệ kế thừa, nghĩa là 1 lớp con kế thừa từ lớp cha thuộc tính cũng như phương thức.
+4. Mục đích của abstract class?
+Là việc che giấu các chi tiết thức thi phức tạp bên trong và cung cấp 1 giao diện cho người dùng, nghĩa là chỉ tập trung vào tính năng của đối tượng.
+5. Phân biệt constructor và method:
++ constructor dùng để khởi tạo đối tượng của 1 lớp, constructor không thể là final vì lớp con sẽ không thể kê thừa được.
++ method dùng để bộc lộ hành vi của đối tượng; method có thể định nghĩa là final và điều đó có nghĩa không thể kế thừa phương thức đó.
+ 
+END! OOP in java in codelearn.io
+___________________________________________
+C/C++ & EMBEDDED C
+Link IDE:
+W3Schools Tryit Editor
+Link tham khảo:
+https://topdev.vn/blog/bo-cau-hoi-phong-van-embedded-developer-chinh-phuc-nha-tuyen-dung/
+Kiểu dự liệu trong C:
+https://topdev.vn/blog/cac-kieu-du-lieu-trong-lap-trinh-c-c-data-type/#kieu-du-lieu-co-ban
+Link lập trình nhúng:
+https://deviot.vn/tutorials/c-co-ban.78025672/tu-khoa-volatile.82619294
+https://tapit.vn/kieu-du-lieu-su-dung-thu-vien-stdint-trong-c/
++ Chuẩn giao tiếp:
+UART, SPI, I2C, CAN, and LIN
++ Autosar, Non-Autosar
++ Unit Testing, System Testing
++ Biến trong c: 
+Local, global (đi cùng extern), static (local vs global), constant 
+Tham khảo:
+http://vncoding.net/2015/11/16/phan-biet-bien-local-global-extern-static-va-const/
++ Kiểu dữ liệu trong C:
+++ kiểu ký tự: 
+Char – 1 byte | unsigned char – 1 byte
+++ kiểu chuỗi:
+Char s[] -- còn phụ thuộc số lượng phần tử, ký tự kết thúc luôn là ‘\0’
+Vd: char s[100];
+Vd: char s[] = “anh do”		// khai báo & khởi tạo bằng chuỗi
+Vd: char s[] = {‘a’, ‘b’, ‘\0’};	// khai báo & khởi tạo từng phần tử.
+++ kiểu số nguyên:
++++ int – 4 byte | unsigned int – 4 byte
++++ short int/ short – 2 byte | unsigned short – 2 byte
+++ long int/ long – 8 byte | unsigned long – 8 byte
+++ kiểu số thực:
++++ float – 4 byte, độ chính xác 6 cs
++++ double – 8 byte, 15 cs
++++ long double – 10 byte, 19 cs
+++ kiểu bool: có giá trị true/false., trong java là boolean
+++ kiểu enum: kiểu liệt kê
+++ kiểu void: kiểu không có gì #NULL
+++ kiểu dữ liệu nâng cao (con trỏ, mảng, struct, union, hàm)
++ return 0 trong c?
+++ Ngầm định trả về 0 là chương trình đã kết thức và không có lỗi sai
+++ Ngược lại, trả về Khác 0 nghĩa là chương trình kết thúc và có lỗi sai
+++ exit(0): là hàm kết thúc chương trình, không lỗi. Dùng khi ta muốn kết thúc ngay chương trình, có thể do tràn bộ nhớ.
++ Cấp phát động trong C
+++ là gì?
+Việc cấp phát 1 vùng nhớ là các ô nhớ liên tiếp tại thời điểm chạy chương trình. Cho phép quản lý vùng nhớ: cáp phát thêm hay giải phóng khi cần.
++++ So sánh cấp phát tĩnh với cấp phát động qua 5 tiêu chí
++++1. Vùng nhớ cấp phát tại thời điểm biên dịch (trước khi ct chạy)<tĩnh>|<động> cấp phát tại thời điểm ct chạy
++++2. Không cho phép cấp phát vung nhớ khi ct chạy | có cho phép cấp phát khi chương trình đang chạy
++++3. Không cho phép quản lỹ vùng nhớ | có cho phép quản lý vùng nhớ: cấp phát thêm và giải phóng vùng nhớ
++++4. Tốn vùng nhớ hơn, xảy ra hiện tượng lãng phí vùng nhớ | giúp tiết kiệm bộ nhớ hơn
++++5. Thời gian thực thi nhanh hơn | thời gian thực thi chậm hơn.
+---> cấp phát bộ nhớ động, ưu điểm lớn nhất là tiết kiệm bộ nhớ, và nhược điểm lớn nhất là phải quản lý vùng nhớ mà ta cấp phát (phải giải phóng để không bị tràn bộ nhớ)
+++ hàm malloc(<số byte>): - memory allocation: 
+là cấp phát 1 số byte vùng nhớ, trả về 1 con trỏ kiểu void, cần phải ép kiểu.
+Vd: int *ptr;	ptr = (int*) malloc(100 * sizeof(int));
+++ hàm calloc(<số ô nhớ>, <kích thước 1 ô nhớ>): continue allocation: 
+có 2 đối số là số ô nhớ và kích thước của mỗi ô, cũng trả về con trỏ void, khác biệt với malloc, calloc() cấp phát và khởi tạo giá trị bạn đầu = 0.
+++ hàm free(<con trỏ>): hàm giải phóng vùng nhớ
+++ hàm realloc(<con trỏ>, <số byte>): 
+hàm cấp phát lại vùng nhớ, trong đó nó sẽ cố gắng mở rộng vùng nhớ sang đàng đuôi, vẫn copy giá trị ô nhớ sang vùng nhớ mới và giải phóng vùng nhớ cũ.
+++ Cấp phát động trong C++: 
+Vd: node *p = new node();…; delete(p);
+VD: float* ptr = new float[10];…; delete [] ptr; 	
++ định dạng dữ liệu trong C
+++ kiểu ký tự: %c
+++ kiểu chuỗi: %s
+++ kiểu nguyên: %d, %x, %o
++++ vd: %6d, %06d, %6.3f, %.3f
+--> 6: kích thước 6 ký tự, kể cả dấu “,”, 06: số 0 điền vào ký tự trống phía trước.
+--> .3: 3 số thập phân sau dấu phảy, còn mặc định là 6 số thập phân.
+++ kiểu số thực: %f (ví dụ 6.300000), %e (kiểu số mũ), %g (ví dụ 6.3)
+++ kiểu con trỏ: %p
+Ngoài ra: tiền tố l – long đi cùng với kiểu nguyên: %d, %x, %o
+Vd: %ld
+
+ 
+1. các thành phần của hệ thống nhúng?
++ rom: 
+Bộ nhớ lưu trữ chương trình và dữ liệu cố định, dùng để nạp và chạy chương trình
++ ram:
+Bộ nhớ lưu trũ chương trình thực thi và biến tạm. 
++ mcu – microcontroller unit: 
+bộ vi điều khiển chứa 1 hoặc nhiều CPU (bộ vi xử lý/ lỗi bộ xử lý). MCU được thiết kế cho các ứng dụng nhúng, giúp tiết kiệm cho các thiết bị khi so sánh với thiết kế gồm bộ vi xử lý (CPU), bộ nhớ,  các thiết bị ngoại vi riềng rẽ.
++ các thiết bị ngoại vi như ADC, DAC, và khối giao tiếp như UART, I2C.
+2. Một số hệ thống nhúng trong thực tế?
++ hệ thống định vị vệ tinh, tên lửa
++ hệ thống viễn thông
++ thiết bị y tế: máy chụp X quang, máy điều hòa nhịp tim
++ thiết bị dân dụng: ti vi, điều hòa, máy giặt
++ trong công nghiệp: dây truyền sản xuất, sản xuất ô tô, robot.
+3. Phân biệt ký sư nhúng phần cứng và nhúng phần mềm.
++ nhúng phần cứng: là công việc có liên quan đến phần cứng bao gồm: thiết kế bảng mạch, thiết kế PCB, test bảng mach.
++ nhúng phần cứng: là công việc liên quan đến phần mềm, là việc xây dựng và phát triển phần mềm trong các sản phẩm: driver, firmware, phần mềm ứng dụng.
+4. ngôn ngữ sử dựng phổ biến trong nhung:
++ c/c++ là ngôn ngữ được sử dụng phổ biến nhất, 95% hệ thống nhúng được lập trình dùng C/C++. Do đó là ngôn ngữ gần với phần cứng, nên tối ưu hóa phần mềm, lập trình đòi hỏi ít thư viện, giúp chương trình nhẹ
++ ngoài ra python cũng được sử dụng trong nhúng, python đang là ngôn ngữ có sự phát triển nhiều nhất số lượng người dùng, có thư viện phong phú giúp ích trong việc viết code. Nhưng giới hạn cho những hệ thống có phần cứng xịn.
+5. từ khóa volatile trong lập trình nhúng.
++ là gì?
+Là từ khóa đại diện cho biến có thể bị thay đổi thất thường mà không thông qua source code.
+VD: volatile int count; hoặc int volatile count;
++ mục đích?
+Trách các lỗi sai khó phát hiện gây ra do việc tối ưu hóa của trình biên dịch
++ biểu hiện:
+Có 3 trường hợp cần khai báo biến volatile
+++ thanh ghi ngoại vi có ánh xạ bộ nhớ (memory-mapped peripheral registers)
+++ biến toàn cục được truy xuất từ trình phục vụ ngắt - interrupt service routine
+++ biến toàn cục được truy xuất từ nhiều tác vụ trong ứng dụng đa luồng.
+VD:
+Biến count đếm mỗi lần có sự kiện nhấn nút và ngắt ngoài xay ra, trình biên dịch sẽ coi biến count không thay đổi
+--> trình biên dịch sẽ bỏ qua biến count để tối ưu hóa kích thước file code được sinh ra.
++ vòng đời của phần mềm: biên dịch, thực thi?
+6. Phân biệt little endian & big endian?
++ là gì?
+Là 2 cơ chế lưu trữ dữ liệu cắn cứ vào thứ tự sắp xếp các byte dữ liệu
++ little endian: - kết thúc nhỏ: byte dữ liệu nhị phân cuối cùng sẽ được ghi vào trước vùng lưu trữ
++ big endian: kết thúc lớn: byte dữ liệu nhị phân đầu tiên sẽ được ghi trước
+--> kiểu big endian là kiểu ghi thuận lợi do tự nhiên hơn
+--> Xong không có sự khác biệt về tốc độ đọc ghi dữ liệu ở 2 kiểu.
++ Có sự khác biệt giữa 2 kiểu trong 2 trường hợp sau:
+++ khi ép kiểu dữ liệu int (4 byte) sang long int (8 byte): LE vẫn giữ nguyên địa chỉ vùng nhớ; BE phải thay đổi bằng cách dịch 4 byte
+++ khi đọc byte dữ liệu đầu tiên để xác định dâu (dấu được quy định bởi byte lớn nhất) thì BE lợi thế hơn.
+7. Phân biệt inline function với macro:
++ macro:
+<1> Là việc nêu quy tắc biến đổi văn bản code đầu vào thành văn bản code đầu ra theo mong muốn
+<2> sử dụng từ khóa #define
+<3> là 1 tiền xử lý và không được biên dịch --> không được kiểm tra lỗi biên dich--> có đầu ra không mong muốn
+<4> tiết kiệm thời gian, nhanh hơn so với inline function
+<5> độ dài code tăng dần
+<6> mục đích là hữu ích trong việc những mẩu code nhỏ được lặp lại nhiều lần
++ inlince function: 
+<1>: giống như hàm bản chất là nói cho trình biên dịch biết chèn code của nó tại địa chỉ mà nó được gọi.
+<2> dùng từ khóa inline vị trí đầu tiên của 1 hàm.
+<3> là thứ được biên dịch và không phải là tiền xử lý --> được kiểm tra lỗi biên dịch --> hạn chế đầu ra không mong muốn
+<4> tiết kiệm thời gian hơn hàm thông thường nhưng chậm hơn macro 1 chút
+<5> độ dài code không đổi (code length remains same)
+<6> mục đích: hữu ích trong việc những mẩu code lớn được lặp lại nhiều lần.
+
++ macro?
+++ Có 2 loại: macro giống như hàm (bị coi là nguy hiểm khi sử dụng --> không dùng) và macro giống như đối tượng.
+VD:
+#define MY_NAME “Alex”		// thay thế định danh MY_NAME bằng Alex
+#define MY_NAME			// thay thế MY_NAME thành không có gì.
+++ kiểu định nghĩa macro dưới (không có văn bản thay thế) thường được dùng với các chỉ thị tiền xử lý có điều kiện: #ifndef, #ifdef, #endif
+VD:
+#define MY_NAME 
+Void doSomeThing(){
+#ifdef MY_NAME
+// đoạn code sẽ được thực thi
+#endif
+}
++ bộ tiền xử lý - preprocessor.
+++ thông dịch?
+Là quá trình diễn ra trước khi biên dịch. Trong quá trình thông dịch bộ tiền xử lý sẽ chạy.
+++ bộ tiền xử lý?
+Là 1 chương trình riêng biệt để thao tác đoạn code, thực hiện việc quét từ trên xuống dưới file code để tìm các chỉ thị tiền xử lý (hay các chỉ thị) để được các chỉ thị báo cáo thực hiện các tác vụ.
+Lưu ý: bộ tiền xử lý không hiểu cú pháp C/C++
+++ chỉ thị tiền xử lý #include? 
+Là quá trình bộ xử lý thay thế lệnh #include bằng nội dung văn bản được được include vào. Tiến hành xử lý nội dung văn bản này trước sau đến phần còn lại của file code, sau đó là được biên dịch.
+++ chỉ thị tiền xử lý có điều kiện: #ifdef, #ifndef, #endif
+++ chỉ thị tương đương comment nhiều dòng: #if 0 … #endif
+++ chỉ thị tiền xử lý chỉ có giá trị từ vị trí được định nghĩa đến hết file
+--> chỉ thị tiền xử lý sẽ không ảnh hưởng đến file khác trong cùng dự án.
+8. So sánh các giao thức UART, SPI, I2C?
+Cả 3 đều là chuẩn giao thức nối tiếp
++ UART là chuẩn giao thức nối tiếp không đồng bộ, còn SPI và I2C là chuẩn giao thức nối tiếp động bộ và do đó có đường clock
++ SPI có tốc độ truyền nhanh nhất nhưng sơ đồ đấu nối phức tạp nhất.
++ UART có khoảng cách truyền xa hơn, trong khi đó SPI và I2C có phạm vi truyền bo mạch.
+9. Interrupt? ISR- interrupt service routine?
++ ngắt là gì?
+Là sự kiện xảy ra bên trong hoặc bên ngoài MCU (bộ vi điều khiển) thông báo 1 yêu cần cần xử lý
++ trình xử lý ngắt? 
+Hoạt động như sau
+++ thiết bị xảy ra sự kiện nào đấy --> gửi tín hiệu ngắt đến MCU để yêu cầu xử lý.
+++ khi nhận được tính hiệu ngắt, MCU tạm dừng công việc hiện tại, nhảy đến chương trình xử lý riêng cho thiết bị đó, đồng thời lưu lại địa chỉ lệnh kế tiếp.
+++ khi ngắt được xử lý xong, MCU quay lại về địa chỉ đã lưu và thực hiện tiếp công việc còn lại.
+10. Triển vọng ngành hệ thống nhúng và IoT?
++ hệ thống nhúng có mặt trên rất nhiều lĩnh vực trong thức tế:
+++ hệ thống đinh vị vệ tinh, tên lửa
+++ các thiết bị dân dụng: ti vi, tủ lạnh, máy giặt
+++ trong công nhiệp: dây chuyền sản xuất, sản xuất ô tô, robot
+++ hệ thống truyền thông, điện thoại
+--> có mặt từ dân dụng đến công nghiệp đến cả công nghệ cao.
++ IoT là 1 trong 4 trụ cột của cuộc cách mạng công nghiệp 4.0
++ IoT hướng đến việc xây dựng, thiết kế, phát triển các thiết bị, các cỗ máy thông minh (đọc và xử lý nhiều cảm biến) kết nối với internet để phục vụ cho nhiều lĩnh vực khác nhau.
++ để đạt được mục tiêu đó thì cần phải xây dựng nhiều hệ thống nhúng cả phần cứng và phần mềm
+--> Ngành IoT và hệ thống nhúng luôn đi liền với nhau, IoT muốn phát triển thì phải có hệ thống nhúng.
+--> trong tương lai xu hướng tuyển dụng các vị trí trong các hệ thống đó càng ngày càng nhiều.
+
++ xâu/ chuỗi trong C:
+++ bản chất là mảng các ký tự mà kết thúc bằng ký tự ‘\0’
+VD: char str[] = “anh do”;
+VD: char str[] = {‘a’, ‘b’, ‘\0’};
+++ hàm gets(<ten xâu/ tên mảng ký tự>): đọc chuỗi bao gồm cả khoảng trắng.
+++ puts(<tên xâu>): ghi chuỗi kể cả khoảng trắng ra màn hình.
+Có 6 phương thức trong thư viện chuẩn string.h
+++1. hàm strlen(<tên xâu>)	: trả về độ dài xâu, trong thư viện string.h
+++2. Strcmp(s1, s2): trả về >0, <0, =0 
+++3. Strcpy(s1, s2): copy chuỗi s2 sang s1 
+++4. Strcat(s1, s2) - concatenate: nối s2 vào đuôi s1 
+++5. Strchr(s1, c): trả về con trỏ đến vị trí khớp đầu tiên của ký tự c
+++6. Strstr(s1, s2): trả về con trỏ đến vị trí khớp đầu tiên của s2 trong s1
++ truyền mảng vào hàm:
+Vd: truyền mảng ký tự không cần kích thước mảng
+Void show(char s[]){
+For(int I = 0; I < strlen(s); I++){
+Puts(s[i]);
+}
+}
+VD: Tương ứng khi ta truyền con trỏ vào
+#include<stdio.h>
+void show(char *name){
+    printf("Hello %s", name);
+}
+int main() {
+    char name[100];
+    scanf("%s", name);
+    show(name);
+    return 0;
+}
++ quá trình biên dịch 1 chương trình C/C++
+Có 4 quá trình:
+++1.source code (.c, .c++, .h)--><tiền xử lý>-->include .h file, expand macro
+++2.ngôn ngữ bậc cao--><biên dịch>--> ngôn ngữ assemberly - gần ngôn ngữ máy
+++3. Ngôn ngữ assembly(.s file)--><assember>--> ngôn ngữ máy (.o, .obj file)
+++4. File dịch từ source code kết hợp với file thư viện--><linking>--> ngôn ngữ máy có thể thưc thi (.exe file)
++ toán tử ## của macro với typedef.
+typedef struct arr_##name{
+type* arr;
+int size;
+} arr_##name;
+
+***
++ Kỹ năng viết mail:
+1 email thông thường có 5 phần
+++1 danh sách người nhận - recipients
+++2 tiên đề - email subject
+++3 nội dung - content
+++4 file/tệp đính kèm - attachments
+++5 chữ ký - signature
+
+Phần content thông thường có 3 phần 
+++1 introduction/ greeting/ context (- bối cảnh)
+++2 email message
+++3 closing
++ kỹ năng viết CV:
+***FPT INTERNSHIP
+
+ 
+
+
+05/10/23**************
++ #include<stdint.h>	: thư viện hỗ trợ int16, uint32, …
++ bitwise operator: toán tủ thao tác bit, có 6 loại
+++1 &
+++2 |
+++3 ^
+++4 ~
+++5 <<
+++6 >>
++ kỹ thuật mặt nạ bit: 
+Vd: a & (~1<<5): tắt bit thứ 5 của a.
++ Kiểu dữ liệu & định dạng dữ liệu
+++ size_t:
+Tùy thuộc compiler: 32 bit system/ 64 bit system --> typedef cho usigned int/ long unsigned int.
+--> Cùng bộ với sizeof(): size_t n = sizeof(arr);
+++ kiểu %lu: long unsigned
+++ %zu: size_t unsigned
++ _Gereric dùng để xác định kiểu dữ liệu của biến.
++ Con trỏ dùng khai báo chuỗi:
+Vd: int8_t str[] = “hello”;
+Vd2: int8_t *str = “hello”;
+--> chuỗi đó lưu trữ trong bộ nhớ constant data
+--> không thể thay đổi chuỗi nếu khai báo theo cách này.
+--> hạn chế lỗi quá trình run time
+--> thực tế dùng nhiều con trỏ hơn dùng mảng khai báo chuỗi.
+--> printf(“%s\n”, <ten_mang/ con_tro_khai_bao_chuoi>)
++ so sánh 1U & index – 1U
++ thư viện list.c & list.h
+++ biến global: NodeType* head = NULL; uint32_t len;
++ struct data type: DeviceType, StudentTyep
+--> dùng chung thư viện List.h thông qua con trỏ uint_8* data
+--> định nghĩa hàm, ta truyền tham số: (uint8_t*)&Fan, sizeof(StudentType)
+--> List_Create(sizeof(StudentType)): thay thế  việc truyền tham số sizeof() trong định nghĩa hàm.
+
++ quy ước ngầm trong embedded c:
+Return chỉ 1 lần và thường là cuối chương trinh
+
++ unit testing: V model gồm 9 bước.
+++1 phân tích yêu cầu: parameter, độ chính xác
+++2 thiết kế hệ thống: phần cứng, giao tiếp trong dự án
+++3 thiết kế kiến trúc: MCU giao tiếp với sensor, LCD, wireless chips ntn?
+++4 thiết kế module: ví dụ thông qua module ADC, thiết kế function với IO mong muốn
+++5 coding
+++6 kiểm thử đơn vị
+++7 kiểm thử sự tích hợp
+++8 kiểm thử hệ thống
+++9 kiểm tra trên môi trường của khách hàng.
++ kỹ thuật kiểm tra đơn vị- unit test
+++ kiểm thử hộp đen
+++ kiểm thử hộp trắng: đi vào hàm kiểm tra (cho đầu vào đúng, sai)
+++ kiểm thử hộp xám.
++ assignment03
+++ hàm fopen, fclose
++ thư viện #include<assert.h>
+++ VD: assert(FILE_OK == status)
+-> thiết kế unit test cho assignment03
+
++ queue: hàng đợi?
+++ tìm hiểu đa luồng là gì?
+++ handling, exception?
+++ priority queue: hàng đợi ưu tiên
+++ enqueue, dequeue: thêm vào và lấy ra
+++ circle queue
+++ force push: ép buộc thêm vào và đẩy ra 
+++ file Queue.c
+// queue
+// array data (u32[])
+// Index Front (u8)
+// Index Rear (u8)
+// capacity (u8)		// kich thuoc hien tai, current_size
+// MAX_SIZE (u8)
+// functions
+// Queue_PushData()
+// Queue_PopData()
+// Queue_ForcePush()
+// Queue_isFull()
+// Queue_isEmpty()
+--> Queue_Front(), Queue_Rear/Back(): đọc node ở đầu và cuối
++ trien khai y tuong
+++ static … s_Queue(){…, .MAX_SIZE = 5;}
+++ cong thuc: rear = (Rear + MAX_SIZE - 1) % MAX_SIZE
+++ hàm init truyen size vào (cho size của queue.)
+***End! File queue.c
++ mock project 1: 
+++ Trang web: hexed.it
+++ đường dẫn tuyệt đối: //...//...
+++ boot block
+++ root directory
+++ entry
++ mock1 project (tiep)
+++ B1: boot block
++++ fat type
++++ find root
++++ …
+
+++ B2: root directory 
++++ read entry
++++ parse data
+-> find data of file
+-> read data
+VD:
+Void FAT_ReadRootDirectory(uint32_t Address){}
+VD:
+ReadEntry()
+-> filename
+-> extension, data, size
+-> file/folder?
+-> data erea?
+Vd:
+++ B3: manage directory and dsiplay
+-> dùng linked list
+Kết luận:
+-> phải thống nhất data, input/output của từng phần
+-> VD:
+struct Directory{
+Uint8_t Reserve[10];
+}
+-> #pragma pack(1): cài allignment =1
++ union
++ bit fill
+++ struct{
+
+}
+--> union{
+Struct …,
+Uint16_t ...
+}
+--> khi goi: A.Time.Day
++ hướng phát triển bài mock project
+++ sử dụng avr, avrg							=> OK
+++ sử dụng kiến thức bit full với struct				=> OK
+++ kiến thức về printf theo yêu cầu: căn lề, kích thước 	=> OK
+++ dùng danh sách liên kết quản lý chuỗi folder khi thao tác vào các folder trong folder
+++ dùng cấp phát động quản lý các mục trong 1 folder
+++ quan trọng nhất, công thức app dụng được cho cả FAT16, FAT32
++ Ôn tập chuẩn bị Audit
+(+) lý thuyết
+Tất cả các kiến thức được học từ trước đến giờ, trong đó tập trung các chủ đề có thể hỏi trong audit
+++ bài mock (bảng FAT): bảng FAT, tính next cluster.
+Root dir-> entry -> first cluster
++++ is file: first cluster -> address = (f_cluser + 33 - 2) * 0x200 -> next cluster (= low_order nibble in case f_cluster % 2 == 0) -> address ...
++++ is folder: 
+
+++ các giai đoạn biên dịch 
+++ little endless, big endless				=> OK
+++ lưu trữ bộ nhớ stack (function call)
+++ quản lý vùng nhớ: heap, stack...
+++ pass by value/pointer
+++ function pointer:
++++ gọi hàm mà không cần biết tên hàm
+VD: trong OS máy tính, -> BIOS(set up system) -> call bằng địa chỉ tới windown/linux
++++ cú pháp: 
+ptr = 0x5000
+(*ptr)();
++++ bootloader (tương đương BIOS) trong vi điều khiển
+++ regular function (0)/function like macro (1)/ inline macro (2)
++++ (0): function call -> (-)bộ nhớ stack; (+) text code; (+) check data type
++++ (1): (-)tốn bộ nhớ text code; (-)không check được data type
++++ (2): (+)bộ nhớ stack (no function call), (+)check được data type; dành cho các code ngắn (không phải là đệ quy)
+++ linked list áp dụng cho cả device và student
++++ List_AddNode(uint8_t *address, uint32_t sizeOfElement)()
++++ phải assignment data trong List_AddNode()
+++ bit fill:
++++ struct có các data type giống nhau?
++++ struct có các data type khác nhau?
+++ đệ quy = hanh tracking
+++ sizeof(array): trả về kích thước của mảng theo đơn vị byte (lưu ý là array nào, local hay global)
+++ ép kiểu con trỏ cho số nguyên: 
+VD: (uint8_t*)0x200000		// bản chất là cho địa chỉ
+(+) thực hành
+++ thư viện linked list dùng chung cho cả device, student
+++ chủ đề queue: đang bị miss							=> OK
+++ các yêu cầu còn thiếu trong bài mock: avr, vrg, bitfill,…	=> OK
++ cách viết tên biến code convention
+(+) theo tài liệu
+++ tên struct:			VD: struct FAT_Entry_Type{};
+++ tên biến local & global:	VD: char* f_name[8], *f_name_extention[3];
+++ tên hàm:				VD: uint32_t rootdiroffset(){}
+
+--> cá nhân: về tên hàm		VD: uint32_t rootDirOffset(){}
+
+(+) theo trainer
+++ tên struct:			VD: tương tự
+++ tên biến local & global:	VD: char* fileName[8]
+++ tên hàm:				VD: uint32_t FAT_RootDirOffset(){}
+MCU
+Jnfef
++ KE16
++ button, led, sensor, current, voltage, resistor, capacitor, transistor, mosfet, memory (ram, flash, eeprom, SD card, cache).
++ actuators: thiết bị chấp hành (LCD, leds, motors)
++ IC: intergrated circuit
++ VLSI: very-large-scale integrated (là quá trình tạo ra mạch tích hợp IC bằng cách kết hợp hàng tỷ bóng bán dẫn MOS transistor trên 1 chip đơn)
++ Scada: ?
++ ALU, Register, Control unit
+++ control unit: fetch instruction, decode, execute
++ quá trình thực hiện 1 câu lệnh:
+++ stack: lưu biến a = 1
+++ text code: lưu hàm main
+++ instruction bus: đường dây liên kết memory vs CPU
++ kiến trúc 32 bit:
+Độ rộng đường bus là 32 bit
++ peripheral: bộ ngoại vi (A/D controller, serial I/O, timer)
++ MPU
+
++ transistor: BJT & MOSFET
+++ bjt: điều khiển bằng dòng điện
+++ mosfet: đk bằng điện áp
++ periperal: IO port, timer, A/D, serial IO
++ tài liệu arm cortex –m0+: chương 1, 2 (3 phần đầu)
++ mcuxpresso IDE: tool code
++ SDK: bộ thư viện phát triển phần mềm.
++ ram: volatile memory, random access memory
++ flash: non-volatile memory, read-only memory.
++ ngoài ra: eeprom, SD card
++ quản lý memory
+++ code: vùng nhớ flash/eeprom/SD card, 0x 0000 0000
+++ sram: 0x 2000 0000 và 0x 1fff ffff
+++ periperal: 0x 4000 0000
+++ private periperal bus: 0x E000 000
++ stack, heap, data, text code -> phân bổ vào ram/rom như thế nào?
++ Điện tử
+(+) điện trở: điện trở pull-up & điện trở pull-down
+(+) transistor: 
+++ con chíp được cấu tạo từ các transitor và khả trình
+++ apply: chuyển mạch, khuếch đại, điều khiển thiết bị khác
+++ 3 cực: base, collector, emitter
+++ emitter<--: loại pnp
+++ emitter-->: loại npn
+(++) loại BJT
++++ là transistor lưỡng cực, điều khiển bằng dòng điện
++++ gồm 3 cực: B -base, C -collector, E -emitter
++++ gồm loại pnp và npn
++++ ký hiệu ???
+(++) loại FET
++++ là transistor hiệu ứng trường, điều khiển bằng điện áp
++++ gồm 3 cực: G -gate, S -source, D –drain
++++ 2 loại: JFET, MOSFET
++++ ký hiệu ??? 
+--> FET tốc độ đóng cắt cao hơn, tiêu thụ ít năng lượng hơn, ít tỏa nhiệt hơn --> được dùng phần lớn trong chip
+(+) memory
+++ flash
+Tương tự bộ nhớ ROM, khi mất điện, data vẫn còn
+(++) loại NAND
+Tổ chức theo dạng sector, truy cập tuần tự, lưu trữ data lớn trong thời gian dài
+(++) loại NOR
+Lưu trữ data nhỏ, trong thời gian ngắn
+--> phần lớn dùng loại NOR: do thời gian truy cập nhanh (nhảy tới bất cứ đâu)
++++ cấu trúc, cách hoạt động???
+++ ram
+Khi mất điện, data bị mất
++++ 1 tế bào nhớ SDRAM ???
++ memory trong MCU
+++ link trang web: laptrinhdientu.com
+++ SRAM, DRAM, SDRAM
+++ ổ đĩa SSD, HHD???
+++ processor có speed đọc, ghi > ram 10 lần
+++ bộ nhớ cache
+++ volatile: bay hơi ở RAM, non-volatile ở FLASH
+++ vùng nhớ BSS: lưu biến global không có khởi tạo giá trị
+++ random access???
+++ stack point???: là thanh ghi của processor
+++ full descending stack: có trong máy tính
+++ core register
++ linker script .ld file
++ reset_handler()
+{
+// system init
+// copy data from flash to ram
+// set bss = 0
+// call main function
+}
+
++ code 5. reset sequence trên web: laptrinhdien-dientu
++ linker script file
++ đọc 2, 3, 5
+
++ pmicro
++ mcuexpressco
+
+“
+https://freescaleesd.flexnetoperations.com/337170/238/13309238/mcuxpressoide-11.8.1_1197.x86_64.deb.bin?ftpRequestID=3439120188&server=freescaleesd.flexnetoperations.com&dtm=DTM20231214125404OTcyMDMwNzM=&authparam=1702587244_b82fefb2277139a18c8281b50f4e6b36&ext=.bin
+”
++ debug function call
+++ next instruction addr
+++ register value
+++ parameter
++ pc, lr register
+++ PC: thanh ghi lưu địa chỉ câu lệnh hiện tại
+++ LR: thanh ghi lưu địa chỉ tiếp sau khi function call trả về
++ D4 -> D5 ?
++ count(1), count(3): giá trị rác gabit++ của count(1) vẫn giữ lại và thành gabit của hàm count(3)
++ quá trình truyền tham chiếu
++ quá trình stack overflow
++ struct alignmen 01 với 04?
++ union?
+END fpt internship
+ END!  C/C++ & embedded C
+___________________________________________
+PYTHON FUNDAMENTALS _CODELEARN.IO*********************
++ Các kiểu dữ liệu trong Python
+++ Cơ bản ta có: int, float, str, bool
+++ khác: list, set, tuple, dict, complex
+++ type(): hàm dùng kiểm tra kiểu dữ liệu
+
+END!  python fundamentals in codelearn.io
++ Ghi chep hackerrank test 25/09/23?
+Note 25/10/23*****************
++ làm bài test mới skill up, hạn 30/10
++ fpt:
+++ assignment: update dùng static, chỉ Array.h
+++ exercise 03: struct & pointer 
+++ viết thư viện linked list --> mở rộng cho queue, stack
+++ training bắt buộc HCL, hạn 30/10
+++ assign 02, hạn 4/11
+
+
+
+
+
+
+
+
+
+
+
+
+
